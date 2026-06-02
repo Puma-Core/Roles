@@ -1,0 +1,13 @@
+enum PermissionAccessScope {
+  API
+  ADMIN
+  ALL
+}
+
+model Permission {
+  id              String           @id @default(uuid())
+  name            String
+  scope           PermissionAccessScope
+  operations      Operation[]      @relation("PermissionOperations")
+  rolePermissions RolePermission[]
+}

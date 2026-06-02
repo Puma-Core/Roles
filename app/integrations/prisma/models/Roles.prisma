@@ -1,0 +1,15 @@
+model Roles {
+  id              String           @id @default(uuid())
+  name            String
+  scope           PermissionAccessScope
+  rolePermissions RolePermission[]
+}
+
+model RolePermission {
+  roleId       String
+  permissionId String
+  role         Roles      @relation(fields: [roleId], references: [id])
+  permission   Permission @relation(fields: [permissionId], references: [id])
+
+  @@id([roleId, permissionId])
+}
