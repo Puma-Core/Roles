@@ -29,14 +29,17 @@ function createOperationData(id: string, values: Partial<CreateOperationData> = 
 }
 
 function createOperationServiceTestContext(): OperationServiceTestContext {
+    // Create a temporary directory for the test database
     const tempDirectory = mkdtempSync(join(tmpdir(), "operation-service-integration-"));
     const databasePath = join(tempDirectory, "test.db");
     const migration = readFileSync("app/integrations/prisma/migrations/20260602203722_tortilla/migration.sql", "utf8");
     const database = new Database(databasePath);
 
+    // Run the migration to create the database schema
     database.exec(migration);
     database.close();
 
+    // Create a Prisma client instance using the Better SQLite3 adapter
     const adapter = new PrismaBetterSqlite3({
         url: databasePath,
     });
