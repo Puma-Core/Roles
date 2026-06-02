@@ -1,0 +1,136 @@
+import "dotenv/config";
+import assert from "node:assert/strict";
+import { mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import test from "node:test";
+import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+import { PrismaClient } from "@prisma/client";
+import Database from "better-sqlite3";
+import { PrismaRepository } from "../../../../app/infraestructure/prisma/prismaRepository";
+import { CreateUserData, UserRepository } from "../../../../app/infraestructure/userRepository";
+import { UserService } from "../../../../app/services/userService";
+
+type UserServiceTestContext = {
+    prisma: PrismaClient;
+    tempDirectory: string;
+    userService: UserService;
+};
+
+function createUserData(id: string, values: Partial<CreateUserData> = {}): CreateUserData {
+    const now = new Date();
+
+    return {
+        id,
+        createdAt: now,
+        updatedAt: now,
+        firstName: "Integration",
+        lastName: "User",
+        password: "integration-password",
+        age: 30,
+        roles: [],
+        nationality: "AR",
+        ...values,
+    };
+}
+
+function createUserServiceTestContext(): UserServiceTestContext {
+    const tempDirectory = mkdtempSync(join(tmpdir(), "user-service-integration-"));
+    const databasePath = join(tempDirectory, "test.db");
+    const migration = readFileSync("app/integrations/prisma/migrations/20260602203722_tortilla/migration.sql", "utf8");
+    const database = new Database(databasePath);
+
+    database.exec(migration);
+    database.close();
+
+    const adapter = new PrismaBetterSqlite3({
+        url: databasePath,
+    });
+    const prisma = new PrismaClient({ adapter });
+    const userRepository = new UserRepository(PrismaRepository, prisma);
+    const userService = new UserService(userRepository);
+
+    return { prisma, tempDirectory, userService };
+}
+
+test("UserService creates a user", async (t) => {
+    const { prisma, tempDirectory, userService } = createUserServiceTestContext();
+    const id = `user-service-create-${Date.now()}`;
+
+    t.after(async () => {
+        await prisma.$disconnect();
+        rmSync(tempDirectory, { recursive: true, force: true });
+    });
+
+    const created = await userService.create(createUserData(id));
+
+    assert.equal(created.id, id);
+    assert.equal(created.firstName, "Integration");
+});
+
+test("UserService gets a user by id", async (t) => {
+    const { prisma, tempDirectory, userService } = createUserServiceTestContext();
+    const id = `user-service-get-by-id-${Date.now()}`;
+
+    t.after(async () => {
+        await prisma.$disconnect();
+        rmSync(tempDirectory, { recursive: true, force: true });
+    });
+
+    await userService.create(createUserData(id));
+
+    const found = await userService.getById(id);
+
+    assert.notEqual(found, null);
+    assert.equal(found?.id, id);
+});
+
+test("UserService gets all users", async (t) => {
+    const { prisma, tempDirectory, userService } = createUserServiceTestContext();
+    const id = `user-service-get-all-${Date.now()}`;
+
+    t.after(async () => {
+        await prisma.$disconnect();
+        rmSync(tempDirectory, { recursive: true, force: true });
+    });
+
+    await userService.create(createUserData(id));
+
+    const users = await userService.getAll();
+    assert.equal(users.some((user) => user.id === id), true);
+});
+
+test("UserService updates a user", async (t) => {
+    const { prisma, tempDirectory, userService } = createUserServiceTestContext();
+    const id = `user-service-update-${Date.now()}`;
+
+    t.after(async () => {
+        await prisma.$disconnect();
+        rmSync(tempDirectory, { recursive: true, force: true });
+    });
+
+    await userService.create(createUserData(id));
+
+    const updated = await userService.update(id, { firstName: "Updated", age: 31 });
+
+    assert.equal(updated.firstName, "Updated");
+    assert.equal(updated.age, 31);
+});
+
+test("UserService deletes a user", async (t) => {
+    const { prisma, tempDirectory, userService } = createUserServiceTestContext();
+    const id = `user-service-delete-${Date.now()}`;
+
+    t.after(async () => {
+        await prisma.$disconnect();
+        rmSync(tempDirectory, { recursive: true, force: true });
+    });
+
+    await userService.create(createUserData(id));
+
+    await userService.delete(id);
+
+    const deleted = await userService.getById(id);
+
+    assert.equal(deleted, null);
+});
