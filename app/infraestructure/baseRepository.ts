@@ -10,8 +10,13 @@ import { Repository } from "./interfaces/repository";
  *
  * @public
  */
-export type RepositoryConstructor<Entity, CreateData = Entity, UpdateData = Partial<Entity>, Id = string> =
-    new (...args: unknown[]) => Repository<Entity, CreateData, UpdateData, Id>;
+export type RepositoryConstructor<
+    Entity,
+    CreateData = Entity,
+    UpdateData = Partial<Entity>,
+    Id = string,
+    Args extends unknown[] = any[],
+> = new (nameTable: string, ...args: Args) => Repository<Entity, CreateData, UpdateData, Id>;
 
 /**
  * Base repository that delegates CRUD operations to a concrete repository implementation.
@@ -23,7 +28,13 @@ export type RepositoryConstructor<Entity, CreateData = Entity, UpdateData = Part
  *
  * @public
  */
-export class BaseRepository<Entity, CreateData = Entity, UpdateData = Partial<Entity>, Id = string>
+export class BaseRepository<
+    Entity,
+    CreateData = Entity,
+    UpdateData = Partial<Entity>,
+    Id = string,
+    Args extends unknown[] = any[],
+>
     implements Repository<Entity, CreateData, UpdateData, Id>
 {
     private readonly repository: Repository<Entity, CreateData, UpdateData, Id>;
@@ -32,37 +43,39 @@ export class BaseRepository<Entity, CreateData = Entity, UpdateData = Partial<En
      * Creates the base repository using a concrete repository class and its constructor arguments.
      *
      * @param repositoryClass - Repository implementation class to instantiate.
+     * @param nameTable - Table or model name used by the concrete repository implementation.
      * @param args - Arguments passed to the repository implementation constructor.
      */
     public constructor(
-        repositoryClass: RepositoryConstructor<Entity, CreateData, UpdateData, Id>,
-        ...args: unknown[]
+        repositoryClass: RepositoryConstructor<Entity, CreateData, UpdateData, Id, Args>,
+        nameTable: string,
+        ...args: Args
     ) {
-        this.repository = new repositoryClass(...args);
+        this.repository = new repositoryClass(nameTable, ...args);
     }
 
     /** Gets one entity by its identifier. */
-    public getById(id: Id): Promise<Entity | null> {
-        return this.repository.getById(id);
+    public async getById(id: Id): Promise<Entity | null> {
+        return await this.repository.getById(id);
     }
 
     /** Gets all entities. */
-    public getAll(): Promise<Entity[]> {
-        return this.repository.getAll();
+    public async getAll(): Promise<Entity[]> {
+        return await this.repository.getAll();
     }
 
     /** Creates one entity. */
-    public create(data: CreateData): Promise<Entity> {
-        return this.repository.create(data);
+    public async create(data: CreateData): Promise<Entity> {
+        return await this.repository.create(data);
     }
 
     /** Updates one entity by its identifier. */
-    public update(id: Id, data: UpdateData): Promise<Entity> {
-        return this.repository.update(id, data);
+    public async update(id: Id, data: UpdateData): Promise<Entity> {
+        return await this.repository.update(id, data);
     }
 
     /** Deletes one entity by its identifier. */
-    public delete(id: Id): Promise<void> {
-        return this.repository.delete(id);
+    public async delete(id: Id): Promise<void> {
+        await this.repository.delete(id);
     }
 }

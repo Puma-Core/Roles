@@ -27,6 +27,6 @@ export class UserRepository extends BaseRepository<User, CreateUserData, UpdateU
         repositoryClass: RepositoryConstructor<User, CreateUserData, UpdateUserData, string>,
         ...args: unknown[]
     ) {
-        super(repositoryClass, ...args);
+        super(repositoryClass, "user", ...args);
     }
 }

@@ -32,30 +32,38 @@ export class PrismaRepository<Entity, CreateData = Entity, UpdateData = Partial<
     implements Repository<Entity, CreateData, UpdateData, Id>
 {
     /**
-     * Creates a Prisma repository using a Prisma model delegate.
+     * Creates a Prisma repository using a Prisma client instance and model name.
      *
-     * @param model - Prisma model delegate used to execute CRUD operations.
+     * @param nameTable - Prisma model name used to select the delegate from the Prisma client.
+     * @param prisma - Prisma client instance used to execute CRUD operations.
      */
-    public constructor(private readonly model: PrismaModel<Entity, CreateData, UpdateData, Id>) {}
+    public constructor(
+        private readonly nameTable: string,
+        private readonly prisma: Record<string, PrismaModel<Entity, CreateData, UpdateData, Id>>,
+    ) {}
+
+    private get model(): PrismaModel<Entity, CreateData, UpdateData, Id> {
+        return this.prisma[this.nameTable];
+    }
 
     /** Gets one entity by its identifier. */
-    public getById(id: Id): Promise<Entity | null> {
-        return this.model.findUnique({ where: { id } });
+    public async getById(id: Id): Promise<Entity | null> {
+        return await this.model.findUnique({ where: { id } });
     }
 
     /** Gets all entities. */
-    public getAll(): Promise<Entity[]> {
-        return this.model.findMany();
+    public async getAll(): Promise<Entity[]> {
+        return await this.model.findMany();
     }
 
     /** Creates one entity. */
-    public create(data: CreateData): Promise<Entity> {
-        return this.model.create({ data });
+    public async create(data: CreateData): Promise<Entity> {
+        return await this.model.create({ data });
     }
 
     /** Updates one entity by its identifier. */
-    public update(id: Id, data: UpdateData): Promise<Entity> {
-        return this.model.update({ where: { id }, data });
+    public async update(id: Id, data: UpdateData): Promise<Entity> {
+        return await this.model.update({ where: { id }, data });
     }
 
     /** Deletes one entity by its identifier. */
