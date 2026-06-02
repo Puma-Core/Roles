@@ -4,6 +4,7 @@ model User {
   updatedAt   DateTime @updatedAt
   firstName   String
   lastName    String
+  password    String
   age         Int
   roles       Json
   nationality String
