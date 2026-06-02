@@ -10,7 +10,7 @@
  */
 export interface Repository<Entity, CreateData = Entity, UpdateData = Partial<Entity>, Id = string> {
     /** Gets one entity by its identifier. */
-    getBy(id: Id): Promise<Entity | null>;
+    getById(id: Id): Promise<Entity | null>;
 
     /** Gets all entities. */
     getAll(): Promise<Entity[]>;
