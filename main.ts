@@ -1,4 +1,5 @@
 import "dotenv/config";
+import jwt from "@fastify/jwt";
 import Fastify from "fastify";
 import { routes } from "./app/endpoints/routes";
 import { prismaPlugin } from "./app/integrations/prisma/prismaPlugin";
@@ -8,6 +9,9 @@ const server = Fastify({
 });
 
 server.register(prismaPlugin);
+server.register(jwt, {
+    secret: process.env.JWT_SECRET ?? "development-secret",
+});
 server.register(routes);
 
 async function start(): Promise<void> {

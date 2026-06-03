@@ -23,7 +23,7 @@ export const routes: FastifyPluginAsync = async (server) => {
     // Add Service Instances
     const operationService = new OperationService(operationRepository);
     const roleService = new RoleService(roleRepository);
-    const tokenService = new TokenService(tokenRepository);
+    const tokenService = new TokenService(tokenRepository, server);
     const userService = new UserService(userRepository, tokenService);
 
     // Add Routes

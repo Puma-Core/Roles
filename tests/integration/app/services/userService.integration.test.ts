@@ -7,6 +7,7 @@ import test from "node:test";
 import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 import { PrismaClient } from "@prisma/client";
 import Database from "better-sqlite3";
+import { FastifyInstance } from "fastify";
 import { PrismaRepository } from "../../../../app/infraestructure/prisma/prismaRepository";
 import { TokenRepository } from "../../../../app/infraestructure/tokenRepository";
 import { CreateUserData, UserRepository } from "../../../../app/infraestructure/userRepository";
@@ -47,7 +48,12 @@ function createUserServiceTestContext(): UserServiceTestContext {
     const prisma = new PrismaClient({ adapter });
     const tokenRepository = new TokenRepository(PrismaRepository, prisma);
     const userRepository = new UserRepository(PrismaRepository, prisma);
-    const tokenService = new TokenService(tokenRepository);
+    const server = {
+        jwt: {
+            sign: (payload: Record<string, unknown>) => JSON.stringify(payload),
+        },
+    } as unknown as FastifyInstance;
+    const tokenService = new TokenService(tokenRepository, server);
     const userService = new UserService(userRepository, tokenService);
 
     return { prisma, tempDirectory, userService };

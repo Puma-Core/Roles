@@ -1,11 +1,10 @@
-import jwt, { Algorithm } from "jsonwebtoken";
+import "@fastify/jwt";
+import { FastifyInstance } from "fastify";
 import { Token } from "../domains/tokens";
 import { User } from "../domains/users";
 import { TokenRepository } from "../infraestructure/tokenRepository";
 
-const JWT_SECRET = process.env.JWT_SECRET ?? "development-secret";
 const JWT_EXPIRES_IN_MIN = Number(process.env.JWT_EXPIRES_IN_MIN ?? 60);
-const JWT_ALGORITHM = (process.env.JWT_ALGORITHM ?? "HS256") as Algorithm;
 
 const MINUTE_IN_MS = 60 * 1000;
 
@@ -22,21 +21,25 @@ export class TokenService {
      *
      * @param tokenRepository - Repository used to access token data.
      */
-    public constructor(private readonly tokenRepository: TokenRepository) {
+    public constructor(
+        private readonly tokenRepository: TokenRepository,
+        private readonly server: FastifyInstance,
+    ) {
         this.tokenRepository = tokenRepository;
+        this.server = server;
     }
 
     /** Creates an access token associated with one user and returns the created token. */
     public getToken(user: User): Promise<Token> {
         const { password, tokens, id, ...data } = user;
-        const expiresIn = JWT_EXPIRES_IN_MIN * MINUTE_IN_MS;
-        const expireAt = new Date(Date.now() + expiresIn);
+        const expiresIn = JWT_EXPIRES_IN_MIN * 60;
+        const expireAt = new Date(Date.now() + JWT_EXPIRES_IN_MIN * MINUTE_IN_MS);
 
-        const value = jwt.sign(
-            data,
-            JWT_SECRET,
+        const value = this.server.jwt.sign(
             {
-                algorithm: JWT_ALGORITHM,
+                ...data,
+            },
+            {
                 expiresIn,
             },
         );
