@@ -1,5 +1,6 @@
 import { PermissionAccessScope } from "./permissions";
 import { Permission } from "../permissions";
+import type { User } from "../users";
 
 /**
  * Represents the values required to create a role domain model.
@@ -17,5 +18,8 @@ export interface RoleValues {
     scope: PermissionAccessScope;
 
     /** Permissions assigned to the role. */
-    permissions: Permission[];
+    permissions?: Permission[];
+
+    /** Users assigned to the role. */
+    users?: User[];
 }

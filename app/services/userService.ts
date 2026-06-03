@@ -22,18 +22,18 @@ export class UserService {
 
     /** Gets one user by its identifier. */
     public async getById(id: number): Promise<User | null> {
-        return await this.userRepository.getById(id);
+        return await this.userRepository.getByIdWithRoles(id);
     }
 
     /** Gets the current user from a decoded token payload. */
     public async getCurrentUser(tokenPayload: Record<string, unknown>): Promise<User | null> {
         const userId = tokenPayload.userId as number;
-        return await this.userRepository.getById(userId);
+        return await this.userRepository.getByIdWithRoles(userId);
     }
 
     /** Gets all users. */
     public async getAll(): Promise<User[]> {
-        return await this.userRepository.getAll();
+        return await this.userRepository.getAllWithRoles();
     }
 
     /** Creates one user. */

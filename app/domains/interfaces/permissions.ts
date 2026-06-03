@@ -23,8 +23,8 @@ export interface PermissionValues {
     scope: PermissionAccessScope;
 
     /** Operations assigned to the permission. */
-    operations: Operation[];
+    operations?: Operation[];
 
     /** Role permission relations assigned to the permission. */
-    rolePermissions: unknown[];
+    rolePermissions?: unknown[];
 }

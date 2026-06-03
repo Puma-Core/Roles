@@ -18,3 +18,9 @@ The main objective is to strictly limit work to what the user requested.
 Before coding, identify which part was explicitly requested. Only that part should be implemented.
 
 If an action is not directly connected to what was requested, it must not be performed.
+
+### Endpoint Schemas
+
+- Keep endpoint schemas separated by their respective model or resource.
+- Store each schema group in its own file under `app/endpoints/schemas/`.
+- Keep `app/endpoints/schemas/index.ts` as an aggregator/export file only.

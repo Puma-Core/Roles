@@ -1,4 +1,5 @@
 import { Token } from "../tokens";
+import type { Role } from "../roles";
 
 /**
  * Represents the values required to create a user domain model.
@@ -31,7 +32,7 @@ export interface UserValues {
     age: number;
 
     /** Roles assigned to the user. */
-    roles: unknown[];
+    roles?: Role[];
 
     /** User nationality. */
     nationality: string;
@@ -41,7 +42,10 @@ export interface UserValues {
     
 }
 
-export interface CreateUserValues extends Omit<UserValues, "id" | "createdAt" | "updatedAt"> {}
+export interface CreateUserValues extends Omit<UserValues, "id" | "createdAt" | "updatedAt" | "roles" | "tokens"> {
+    /** Role identifiers assigned to the user. */
+    roles?: number[];
+}
 
 /** Credentials required to authenticate a user. */
 export interface LoginUserValues {

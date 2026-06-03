@@ -4,6 +4,7 @@
  * @public
  */
 import { UserValues } from "./interfaces/users";
+import { Role } from "./roles";
 import { Token } from "./tokens";
 
 import bcrypt from "bcrypt";
@@ -34,7 +35,7 @@ export class User {
     public age: number;
 
     /** Roles assigned to the user. */
-    public roles: unknown[];
+    public roles: Role[];
 
     /** User nationality. */
     public nationality: string;
@@ -56,7 +57,7 @@ export class User {
         this.lastName = values.lastName;
         this.password = values.password;
         this.age = values.age;
-        this.roles = values.roles;
+        this.roles = (values.roles ?? []).map((role) => role instanceof Role ? role : new Role(role));
         this.nationality = values.nationality;
         this.tokens = values.tokens ?? [];
     }

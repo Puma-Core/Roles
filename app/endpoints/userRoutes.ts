@@ -43,7 +43,7 @@ export class UserRoutes {
                 summary: "Get all users",
                 description: "Returns a list of all registered users.",
                 response: {
-                    200: { type: "array", items: userSchemas.User },
+                    200: { type: "array", items: userSchemas.UserListItem },
                 },
             },
         }, this.getAll.bind(this));

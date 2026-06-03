@@ -2,6 +2,7 @@ model Roles {
   id              Int              @id @default(autoincrement())
   name            String
   scope           PermissionAccessScope
+  users           User[]
   rolePermissions RolePermission[]
 }
 

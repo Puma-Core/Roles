@@ -3,7 +3,7 @@ import { Role } from "../domains/roles";
 import { RoleValues } from "../domains/interfaces/roles";
 
 /** Data required to create a role. */
-export type CreateRoleData = Omit<RoleValues, "id" | "permissions">;
+export type CreateRoleData = Omit<RoleValues, "id" | "permissions" | "users">;
 
 /** Data allowed to update a role. */
 export type UpdateRoleData = Partial<CreateRoleData>;

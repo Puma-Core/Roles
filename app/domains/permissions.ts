@@ -31,7 +31,7 @@ export class Permission {
         this.id = values.id;
         this.name = values.name;
         this.scope = values.scope;
-        this.operations = values.operations;
-        this.rolePermissions = values.rolePermissions;
+        this.operations = (values.operations ?? []).map((operation) => operation instanceof Operation ? operation : new Operation(operation));
+        this.rolePermissions = values.rolePermissions ?? [];
     }
 }
