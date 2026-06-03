@@ -35,7 +35,7 @@ function createUserData(id: string, values: Partial<CreateUserData> = {}): Creat
 function createUserServiceTestContext(): UserServiceTestContext {
     const tempDirectory = mkdtempSync(join(tmpdir(), "user-service-integration-"));
     const databasePath = join(tempDirectory, "test.db");
-    const migration = readFileSync("app/integrations/prisma/migrations/20260602203722_tortilla/migration.sql", "utf8");
+    const migration = readFileSync("app/integrations/prisma/migrations/20260603025332/migration.sql", "utf8");
     const database = new Database(databasePath);
 
     database.exec(migration);

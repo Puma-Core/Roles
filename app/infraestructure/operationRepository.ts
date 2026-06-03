@@ -31,6 +31,11 @@ export class OperationRepository extends BaseRepository<Operation, CreateOperati
         repositoryClass: RepositoryConstructor<Operation, CreateOperationData, UpdateOperationData, number>,
         ...args: unknown[]
     ) {
-        super(repositoryClass, OperationRepository.TABLE_NAME, OperationRepository.MODEL, ...args);
+        super(
+            repositoryClass,
+            OperationRepository.TABLE_NAME,
+            OperationRepository.MODEL,
+            ...args
+        );
     }
 }

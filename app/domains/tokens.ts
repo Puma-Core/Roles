@@ -18,6 +18,9 @@ export class Token {
     /** Date when the token was created. */
     public createdAt: Date;
 
+    /** Date when the token expires. */
+    public expireAt: Date;
+
     /** User identifier associated with the token. */
     public userId: number;
 
@@ -31,6 +34,7 @@ export class Token {
         this.name = values.name;
         this.value = values.value;
         this.createdAt = values.createdAt;
+        this.expireAt = values.expireAt;
         this.userId = values.userId;
     }
 }

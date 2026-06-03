@@ -3,6 +3,7 @@ model Token {
   name      String
   value     String
   createdAt DateTime @default(now())
+  expireAt  DateTime
   userId    Int
   user      User     @relation(fields: [userId], references: [id])
 }

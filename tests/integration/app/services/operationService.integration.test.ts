@@ -31,7 +31,7 @@ function createOperationServiceTestContext(): OperationServiceTestContext {
     // Create a temporary directory for the test database
     const tempDirectory = mkdtempSync(join(tmpdir(), "operation-service-integration-"));
     const databasePath = join(tempDirectory, "test.db");
-    const migration = readFileSync("app/integrations/prisma/migrations/20260602203722_tortilla/migration.sql", "utf8");
+    const migration = readFileSync("app/integrations/prisma/migrations/20260603025332/migration.sql", "utf8");
     const database = new Database(databasePath);
 
     // Run the migration to create the database schema

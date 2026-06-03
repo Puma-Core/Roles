@@ -16,6 +16,9 @@ export interface TokenValues {
     /** Date when the token was created. */
     createdAt: Date;
 
+    /** Date when the token expires. */
+    expireAt: Date;
+
     /** User identifier associated with the token. */
     userId: number;
 }

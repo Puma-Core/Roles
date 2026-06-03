@@ -28,7 +28,7 @@ function createRoleData(id: string, values: Partial<CreateRoleData> = {}): Creat
 function createRoleServiceTestContext(): RoleServiceTestContext {
     const tempDirectory = mkdtempSync(join(tmpdir(), "role-service-integration-"));
     const databasePath = join(tempDirectory, "test.db");
-    const migration = readFileSync("app/integrations/prisma/migrations/20260602203722_tortilla/migration.sql", "utf8");
+    const migration = readFileSync("app/integrations/prisma/migrations/20260603025332/migration.sql", "utf8");
     const database = new Database(databasePath);
 
     database.exec(migration);

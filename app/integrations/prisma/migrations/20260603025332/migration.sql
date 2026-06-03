@@ -35,6 +35,17 @@ CREATE TABLE "RolePermission" (
 );
 
 -- CreateTable
+CREATE TABLE "Token" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "name" TEXT NOT NULL,
+    "value" TEXT NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "expireAt" DATETIME NOT NULL,
+    "userId" INTEGER NOT NULL,
+    CONSTRAINT "Token_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- CreateTable
 CREATE TABLE "User" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -46,16 +57,6 @@ CREATE TABLE "User" (
     "age" INTEGER NOT NULL,
     "roles" JSONB NOT NULL,
     "nationality" TEXT NOT NULL
-);
-
--- CreateTable
-CREATE TABLE "Token" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "name" TEXT NOT NULL,
-    "value" TEXT NOT NULL,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "userId" INTEGER NOT NULL,
-    CONSTRAINT "Token_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- CreateIndex
