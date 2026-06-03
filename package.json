@@ -7,8 +7,12 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "dev": "tsx watch --clear-screen=false main.ts",
-    "start": "tsx main.ts",
+    "dev": "npm run db:setup && tsx watch --clear-screen=false main.ts",
+    "start": "npm run db:setup && tsx main.ts",
+    "db:generate": "npx prisma generate --config app/integrations/prisma/prisma.config.ts",
+    "db:migrate": "npx prisma migrate deploy --config app/integrations/prisma/prisma.config.ts",
+    "db:seed": "tsx scripts/seed.ts",
+    "db:setup": "npm run db:generate && npm run db:migrate && npm run db:seed",
     "test": "jest --runInBand",
     "test:unit": "jest --runInBand --testPathPattern='tests/unitTests'",
     "test:integration": "jest --runInBand --testPathPattern='tests/integration'"

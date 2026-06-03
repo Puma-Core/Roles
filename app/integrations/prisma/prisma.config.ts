@@ -2,13 +2,13 @@ import "dotenv/config";
 import { defineConfig } from "prisma/config";
 
 export default defineConfig({
-  schema: process.env.PRISMA_CONFIG_PATH ?? "./",
+  schema: "./",
 
   migrations: {
-    path: process.env.PRISMA_MIGRATIONS_PATH ?? "./app/integrations/prisma/migrations",
+    path: "./migrations",
   },
 
   datasource: {
-    url: process.env.PRISMA_DATASOURCE_URL ?? "file:./dev.db",
+    url: process.env.PRISMA_DATASOURCE_URL ?? `file:${process.cwd()}/app/integrations/prisma/dev.db`,
   },
 });
