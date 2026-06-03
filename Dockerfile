@@ -6,7 +6,7 @@ ENV NODE_ENV=development
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends python3 make g++ openssl ca-certificates sqlite3 \
+    && apt-get install -y --no-install-recommends python3 make g++ openssl ca-certificates sqlite3 git \
     && rm -rf /var/lib/apt/lists/*
 
 COPY package*.json ./
