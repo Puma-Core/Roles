@@ -1,0 +1,22 @@
+services:
+  roles-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: puma-core-roles-api
+    env_file:
+      - .env
+    command: sh -c "npx prisma generate --config app/integrations/prisma/prisma.config.ts && npx prisma migrate deploy --config app/integrations/prisma/prisma.config.ts && npm run dev"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - "${FASTIFY_PORT:-3012}:${FASTIFY_PORT:-3012}"
+    networks:
+      - roles-network
+    restart: unless-stopped
+
+networks:
+  roles-network:
+    name: puma-core-roles-network
+    driver: bridge
