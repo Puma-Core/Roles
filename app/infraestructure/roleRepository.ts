@@ -19,6 +19,7 @@ export type UpdateRoleData = Partial<CreateRoleData>;
 export class RoleRepository extends BaseRepository<Role, CreateRoleData, UpdateRoleData, number> {
     /** Prisma model name used by the concrete repository implementation. */
     public static readonly TABLE_NAME = "roles";
+    public static readonly MODEL = Role;
 
     /**
      * Creates a role repository using the provided repository implementation.
@@ -30,6 +31,6 @@ export class RoleRepository extends BaseRepository<Role, CreateRoleData, UpdateR
         repositoryClass: RepositoryConstructor<Role, CreateRoleData, UpdateRoleData, number>,
         ...args: unknown[]
     ) {
-        super(repositoryClass, RoleRepository.TABLE_NAME, ...args);
+        super(repositoryClass, RoleRepository.TABLE_NAME, RoleRepository.MODEL, ...args);
     }
 }

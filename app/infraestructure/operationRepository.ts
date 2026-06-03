@@ -19,6 +19,7 @@ export type UpdateOperationData = Partial<CreateOperationData>;
 export class OperationRepository extends BaseRepository<Operation, CreateOperationData, UpdateOperationData, number> {
     /** Prisma model name used by the concrete repository implementation. */
     public static readonly TABLE_NAME = "Operation";
+    public static readonly MODEL = Operation;
 
     /**
      * Creates an operation repository using the provided repository implementation.
@@ -30,6 +31,6 @@ export class OperationRepository extends BaseRepository<Operation, CreateOperati
         repositoryClass: RepositoryConstructor<Operation, CreateOperationData, UpdateOperationData, number>,
         ...args: unknown[]
     ) {
-        super(repositoryClass, OperationRepository.TABLE_NAME, ...args);
+        super(repositoryClass, OperationRepository.TABLE_NAME, OperationRepository.MODEL, ...args);
     }
 }

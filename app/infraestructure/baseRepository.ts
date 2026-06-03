@@ -18,6 +18,9 @@ export type RepositoryConstructor<
     Args extends unknown[] = any[],
 > = new (nameTable: string, ...args: Args) => Repository<Entity, CreateData, UpdateData, Id>;
 
+/** Defines the constructor shape required to create a domain entity instance. */
+export type EntityConstructor<Entity> = new (values: Entity) => Entity;
+
 /**
  * Base repository that delegates CRUD operations to a concrete repository implementation.
  *
@@ -44,34 +47,48 @@ export class BaseRepository<
      *
      * @param repositoryClass - Repository implementation class to instantiate.
      * @param nameTable - Table or model name used by the concrete repository implementation.
+     * @param entityClass - Domain entity class used to create returned model instances.
      * @param args - Arguments passed to the repository implementation constructor.
      */
     public constructor(
         repositoryClass: RepositoryConstructor<Entity, CreateData, UpdateData, Id, Args>,
         nameTable: string,
+        private readonly entityClass: EntityConstructor<Entity>,
         ...args: Args
     ) {
         this.repository = new repositoryClass(nameTable, ...args);
     }
 
+    private toEntity(data: Entity): Entity {
+        return data instanceof this.entityClass ? data : new this.entityClass(data);
+    }
+
     /** Gets one entity by its identifier. */
     public async getById(id: Id): Promise<Entity | null> {
-        return await this.repository.getById(id);
+        const entity = await this.repository.getById(id);
+
+        return entity ? this.toEntity(entity) : null;
     }
 
     /** Gets all entities. */
     public async getAll(): Promise<Entity[]> {
-        return await this.repository.getAll();
+        const entities = await this.repository.getAll();
+
+        return entities.map((entity) => this.toEntity(entity));
     }
 
     /** Creates one entity. */
     public async create(data: CreateData): Promise<Entity> {
-        return await this.repository.create(data);
+        const entity = await this.repository.create(data);
+
+        return this.toEntity(entity);
     }
 
     /** Updates one entity by its identifier. */
     public async update(id: Id, data: UpdateData): Promise<Entity> {
-        return await this.repository.update(id, data);
+        const entity = await this.repository.update(id, data);
+
+        return this.toEntity(entity);
     }
 
     /** Deletes one entity by its identifier. */

@@ -19,6 +19,7 @@ export type UpdateUserData = Partial<CreateUserValues>;
 export class UserRepository extends BaseRepository<User, CreateUserData, UpdateUserData, number> {
     /** Prisma model name used by the concrete repository implementation. */
     public static readonly TABLE_NAME = "User";
+    public static readonly MODEL = User;
 
     /**
      * Creates a user repository using the provided repository implementation.
@@ -30,6 +31,6 @@ export class UserRepository extends BaseRepository<User, CreateUserData, UpdateU
         repositoryClass: RepositoryConstructor<User, CreateUserData, UpdateUserData, number>,
         ...args: unknown[]
     ) {
-        super(repositoryClass, UserRepository.TABLE_NAME, ...args);
+        super(repositoryClass, UserRepository.TABLE_NAME, UserRepository.MODEL, ...args);
     }
 }

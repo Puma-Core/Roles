@@ -20,6 +20,7 @@ export class UserRoutes {
         server.post("/api/users", this.create.bind(this));
         server.put("/api/users/:id", this.update.bind(this));
         server.delete("/api/users/:id", this.delete.bind(this));
+        server.post("/api/users/login", this.login.bind(this));
     }
 
     private async getAll(): Promise<unknown> {
@@ -43,8 +44,8 @@ export class UserRoutes {
         request: FastifyRequest<{ Body: UserCreatePayload }>,
         reply: FastifyReply,
     ): Promise<unknown> {
-        const { age, firstName, lastName, nationality, password, roles } = request.body;
-        const user = await this.userService.create({ age, firstName, lastName, nationality, password, roles });
+        const { age, firstName, lastName, nationality, password, roles, username } = request.body;
+        const user = await this.userService.create({ age, firstName, lastName, nationality, password, roles, username });
 
         return reply.status(201).send(user);
     }
@@ -62,5 +63,19 @@ export class UserRoutes {
         await this.userService.delete(Number(request.params.id));
 
         return reply.status(204).send();
+    }
+
+    private async login(
+        request: FastifyRequest<{ Body: { username: string; password: string } }>,
+        reply: FastifyReply,
+    ): Promise<unknown> {
+        const { username, password } = request.body;
+        const token = await this.userService.login({ username, password });
+
+        if (token === null) {
+            return reply.status(401).send({ message: "Invalid credentials" });
+        }
+
+        return token;
     }
 }

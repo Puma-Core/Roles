@@ -19,7 +19,7 @@ export type UpdateTokenData = Partial<CreateTokenValues>;
 export class TokenRepository extends BaseRepository<Token, CreateTokenData, UpdateTokenData, number> {
     /** Prisma model name used by the concrete repository implementation. */
     public static readonly TABLE_NAME = "Token";
-
+    public static readonly MODEL = Token;
     /**
      * Creates a token repository using the provided repository implementation.
      *
@@ -30,6 +30,6 @@ export class TokenRepository extends BaseRepository<Token, CreateTokenData, Upda
         repositoryClass: RepositoryConstructor<Token, CreateTokenData, UpdateTokenData, number>,
         ...args: unknown[]
     ) {
-        super(repositoryClass, TokenRepository.TABLE_NAME, ...args);
+        super(repositoryClass, TokenRepository.TABLE_NAME, TokenRepository.MODEL, ...args);
     }
 }

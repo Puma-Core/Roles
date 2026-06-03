@@ -8,7 +8,9 @@ import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 import { PrismaClient } from "@prisma/client";
 import Database from "better-sqlite3";
 import { PrismaRepository } from "../../../../app/infraestructure/prisma/prismaRepository";
+import { TokenRepository } from "../../../../app/infraestructure/tokenRepository";
 import { CreateUserData, UserRepository } from "../../../../app/infraestructure/userRepository";
+import { TokenService } from "../../../../app/services/tokenService";
 import { UserService } from "../../../../app/services/userService";
 
 type UserServiceTestContext = {
@@ -19,6 +21,7 @@ type UserServiceTestContext = {
 
 function createUserData(id: string, values: Partial<CreateUserData> = {}): CreateUserData {
     return {
+        username: `integration-user-${id}`,
         firstName: "Integration",
         lastName: "User",
         password: "integration-password",
@@ -42,8 +45,10 @@ function createUserServiceTestContext(): UserServiceTestContext {
         url: databasePath,
     });
     const prisma = new PrismaClient({ adapter });
+    const tokenRepository = new TokenRepository(PrismaRepository, prisma);
     const userRepository = new UserRepository(PrismaRepository, prisma);
-    const userService = new UserService(userRepository);
+    const tokenService = new TokenService(tokenRepository);
+    const userService = new UserService(userRepository, tokenService);
 
     return { prisma, tempDirectory, userService };
 }
@@ -60,6 +65,7 @@ test("UserService creates a user", async (t) => {
     const created = await userService.create(createUserData(id));
 
     assert.equal(created.firstName, "Integration");
+    assert.equal(created.username, `integration-user-${id}`);
 });
 
 test("UserService gets a user by id", async (t) => {
@@ -127,4 +133,25 @@ test("UserService deletes a user", async (t) => {
     const deleted = await userService.getById(created.id);
 
     assert.equal(deleted, null);
+});
+
+test("UserService logs in a user", async (t) => {
+    const { prisma, tempDirectory, userService } = createUserServiceTestContext();
+    const id = `user-service-login-${Date.now()}`;
+
+    t.after(async () => {
+        await prisma.$disconnect();
+        rmSync(tempDirectory, { recursive: true, force: true });
+    });
+
+    const created = await userService.create(createUserData(id));
+
+    const token = await userService.login({
+        username: created.username,
+        password: "integration-password",
+    });
+
+    assert.notEqual(token, null);
+    assert.equal(token?.name, "access_token");
+    assert.equal(token?.userId, created.id);
 });

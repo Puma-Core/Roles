@@ -38,6 +38,7 @@ export interface UserValues {
 
     /** Tokens assigned to the user. */
     tokens?: Token[];
+    
 }
 
 export interface CreateUserValues extends Omit<UserValues, "id" | "createdAt" | "updatedAt"> {}

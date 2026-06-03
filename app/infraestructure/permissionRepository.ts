@@ -19,6 +19,7 @@ export type UpdatePermissionData = Partial<CreatePermissionData>;
 export class PermissionRepository extends BaseRepository<Permission, CreatePermissionData, UpdatePermissionData, number> {
     /** Prisma model name used by the concrete repository implementation. */
     public static readonly TABLE_NAME = "Permission";
+    public static readonly MODEL = Permission;
 
     /**
      * Creates a permission repository using the provided repository implementation.
@@ -30,6 +31,6 @@ export class PermissionRepository extends BaseRepository<Permission, CreatePermi
         repositoryClass: RepositoryConstructor<Permission, CreatePermissionData, UpdatePermissionData, number>,
         ...args: unknown[]
     ) {
-        super(repositoryClass, PermissionRepository.TABLE_NAME, ...args);
+        super(repositoryClass, PermissionRepository.TABLE_NAME, PermissionRepository.MODEL, ...args);
     }
 }

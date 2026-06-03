@@ -6,6 +6,8 @@
 import { UserValues } from "./interfaces/users";
 import { Token } from "./tokens";
 
+import bcrypt from "bcrypt";
+
 export class User {
     /** Unique user identifier. */
     public id: number;
@@ -57,5 +59,9 @@ export class User {
         this.roles = values.roles;
         this.nationality = values.nationality;
         this.tokens = values.tokens ?? [];
+    }
+
+    async isValidPassword(password: string): Promise<boolean> {
+        return await bcrypt.compare(password, this.password);
     }
 }
