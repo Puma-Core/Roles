@@ -1,6 +1,7 @@
 import { BaseRepository, RepositoryConstructor } from "./baseRepository";
 import { User } from "../domains/users";
 import { CreateUserValues } from "../domains/interfaces/users";
+import { RepositoryQueryArgs } from "./interfaces/repository";
 
 /** Data required to create a user. */
 export type CreateUserData = CreateUserValues;
@@ -35,7 +36,7 @@ export class UserRepository extends BaseRepository<User, CreateUserData, UpdateU
     }
 
     /** Updates one user and maps role identifiers to the Prisma relation format. */
-    public async update(id: number, data: UpdateUserData): Promise<User> {
+    public async update(id: number, data: UpdateUserData, args?: RepositoryQueryArgs): Promise<User> {
         const { roles, ...userData } = data;
         const updateData: Record<string, unknown> = { ...userData };
 
@@ -45,6 +46,6 @@ export class UserRepository extends BaseRepository<User, CreateUserData, UpdateU
             };
         }
 
-        return await super.update(id, updateData as UpdateUserData);
+        return await super.update(id, updateData as UpdateUserData, args);
     }
 }

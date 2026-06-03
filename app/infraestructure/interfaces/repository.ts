@@ -24,7 +24,7 @@ export interface Repository<Entity, CreateData = Entity, UpdateData = Partial<En
     create(data: CreateData): Promise<Entity>;
 
     /** Updates one entity by its identifier. */
-    update(id: Id, data: UpdateData): Promise<Entity>;
+    update(id: Id, data: UpdateData, args?: RepositoryQueryArgs): Promise<Entity>;
 
     /** Deletes one entity by its identifier. */
     delete(id: Id): Promise<void>;

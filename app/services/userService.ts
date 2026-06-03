@@ -44,8 +44,8 @@ export class UserService {
     }
 
     /** Updates one user by its identifier. */
-    public async update(id: number, data: UpdateUserData): Promise<User> {
-        return await this.userRepository.update(id, data);
+    public async update(id: number, data: UpdateUserData, args?: RepositoryQueryArgs): Promise<User> {
+        return await this.userRepository.update(id, data, args);
     }
 
     /** Deletes one user by its identifier. */

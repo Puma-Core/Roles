@@ -15,7 +15,7 @@ export type PrismaModel<Entity, CreateData, UpdateData, Id> = {
     findFirst(args: { where: Partial<Record<keyof Entity, unknown>> } & RepositoryQueryArgs): Promise<Entity | null>;
     findMany(args?: RepositoryQueryArgs): Promise<Entity[]>;
     create(args: { data: CreateData }): Promise<Entity>;
-    update(args: { where: { id: Id }; data: UpdateData }): Promise<Entity>;
+    update(args: { where: { id: Id }; data: UpdateData } & RepositoryQueryArgs): Promise<Entity>;
     delete(args: { where: { id: Id } }): Promise<Entity>;
 };
 
@@ -68,8 +68,8 @@ export class PrismaRepository<Entity, CreateData = Entity, UpdateData = Partial<
     }
 
     /** Updates one entity by its identifier. */
-    public async update(id: Id, data: UpdateData): Promise<Entity> {
-        return await this.model.update({ where: { id }, data });
+    public async update(id: Id, data: UpdateData, args: RepositoryQueryArgs = {}): Promise<Entity> {
+        return await this.model.update({ where: { id }, data, ...args });
     }
 
     /** Deletes one entity by its identifier. */

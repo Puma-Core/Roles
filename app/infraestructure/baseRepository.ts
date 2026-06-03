@@ -92,8 +92,8 @@ export class BaseRepository<
     }
 
     /** Updates one entity by its identifier. */
-    public async update(id: Id, data: UpdateData): Promise<Entity> {
-        const entity = await this.repository.update(id, data);
+    public async update(id: Id, data: UpdateData, args?: RepositoryQueryArgs): Promise<Entity> {
+        const entity = await this.repository.update(id, data, args);
 
         return this.toEntity(entity);
     }

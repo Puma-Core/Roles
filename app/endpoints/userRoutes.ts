@@ -145,7 +145,7 @@ export class UserRoutes {
     private async update(
         request: FastifyRequest<{ Params: UserParams; Body: UpdateUserData }>,
     ): Promise<unknown> {
-        return await this.userService.update(Number(request.params.id), request.body);
+        return await this.userService.update(Number(request.params.id), request.body, { include: USER_ROLES_INCLUDE });
     }
 
     private async delete(
