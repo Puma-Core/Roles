@@ -1,5 +1,6 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { TokenService } from "../services/tokenService";
+import { tokenSchemas, errorSchema } from "./schemas";
 
 /** Registers token HTTP routes. */
 export class TokenRoutes {
@@ -10,8 +11,37 @@ export class TokenRoutes {
     }
 
     public register(server: FastifyInstance): void {
-        server.post(`${this.ROUTE_PREFIX}/login`, this.login.bind(this));
-        server.post(`${this.ROUTE_PREFIX}/refresh`, this.refreshToken.bind(this));
+        server.post(`${this.ROUTE_PREFIX}/login`, {
+            schema: {
+                tags: ["Tokens"],
+                summary: "Login with credentials",
+                description: "Authenticates a user and returns an access token.",
+                body: tokenSchemas.LoginRequest,
+                response: {
+                    200: tokenSchemas.Token,
+                    401: errorSchema,
+                },
+            },
+        }, this.login.bind(this));
+
+        server.post(`${this.ROUTE_PREFIX}/refresh`, {
+            schema: {
+                tags: ["Tokens"],
+                summary: "Refresh access token",
+                description: "Refreshes a valid token while it has not expired.",
+                headers: {
+                    type: "object",
+                    required: ["authorization"],
+                    properties: {
+                        authorization: { type: "string" },
+                    },
+                },
+                response: {
+                    200: tokenSchemas.Token,
+                    401: errorSchema,
+                },
+            },
+        }, this.refreshToken.bind(this));
     }
 
     private async login(

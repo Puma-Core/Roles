@@ -2,11 +2,17 @@ import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { UpdateUserData } from "../infraestructure/userRepository";
 import { UserService } from "../services/userService";
 import { UserCreatePayload } from "./models/userCreatePayload";
+import { userSchemas, errorSchema } from "./schemas";
 
 type UserParams = {
     id: string;
 };
 
+const idParamSchema = {
+    type: "object",
+    required: ["id"],
+    properties: { id: { type: "string" } },
+};
 
 /** Registers user HTTP routes. */
 export class UserRoutes {
@@ -17,11 +23,66 @@ export class UserRoutes {
     }
 
     public register(server: FastifyInstance): void {
-        server.get(`${this.ROUTE_PREFIX}`, this.getAll.bind(this));
-        server.get(`${this.ROUTE_PREFIX}/:id`, this.getById.bind(this));
-        server.post(`${this.ROUTE_PREFIX}`, this.create.bind(this));
-        server.put(`${this.ROUTE_PREFIX}/:id`, this.update.bind(this));
-        server.delete(`${this.ROUTE_PREFIX}/:id`, this.delete.bind(this));
+        server.get(`${this.ROUTE_PREFIX}`, {
+            schema: {
+                tags: ["Users"],
+                summary: "Get all users",
+                description: "Returns a list of all registered users.",
+                response: {
+                    200: { type: "array", items: userSchemas.User },
+                },
+            },
+        }, this.getAll.bind(this));
+
+        server.get(`${this.ROUTE_PREFIX}/:id`, {
+            schema: {
+                tags: ["Users"],
+                summary: "Get user by ID",
+                description: "Returns a single user by its identifier.",
+                params: idParamSchema,
+                response: {
+                    200: userSchemas.User,
+                    404: errorSchema,
+                },
+            },
+        }, this.getById.bind(this));
+
+        server.post(`${this.ROUTE_PREFIX}`, {
+            schema: {
+                tags: ["Users"],
+                summary: "Create a new user",
+                description: "Creates a new user with the provided data.",
+                body: userSchemas.CreateUser,
+                response: {
+                    201: userSchemas.User,
+                },
+            },
+        }, this.create.bind(this));
+
+        server.put(`${this.ROUTE_PREFIX}/:id`, {
+            schema: {
+                tags: ["Users"],
+                summary: "Update a user",
+                description: "Updates an existing user by its identifier.",
+                params: idParamSchema,
+                body: userSchemas.UpdateUser,
+                response: {
+                    200: userSchemas.User,
+                },
+            },
+        }, this.update.bind(this));
+
+        server.delete(`${this.ROUTE_PREFIX}/:id`, {
+            schema: {
+                tags: ["Users"],
+                summary: "Delete a user",
+                description: "Deletes a user by its identifier.",
+                params: idParamSchema,
+                response: {
+                    204: { description: "User deleted" },
+                },
+            },
+        }, this.delete.bind(this));
     }
 
     private async getAll(): Promise<unknown> {

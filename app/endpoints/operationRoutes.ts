@@ -4,9 +4,16 @@ import {
     UpdateOperationData,
 } from "../infraestructure/operationRepository";
 import { OperationService } from "../services/operationService";
+import { operationSchemas, errorSchema } from "./schemas";
 
 type OperationParams = {
     id: string;
+};
+
+const idParamSchema = {
+    type: "object",
+    required: ["id"],
+    properties: { id: { type: "string" } },
 };
 
 /** Registers operation HTTP routes. */
@@ -18,11 +25,66 @@ export class OperationRoutes {
     }
 
     public register(server: FastifyInstance): void {
-        server.get(this.BASE_PATH, this.getAll.bind(this));
-        server.get(`${this.BASE_PATH}/:id`, this.getById.bind(this));
-        server.post(this.BASE_PATH, this.create.bind(this));
-        server.put(`${this.BASE_PATH}/:id`, this.update.bind(this));
-        server.delete(`${this.BASE_PATH}/:id`, this.delete.bind(this));
+        server.get(this.BASE_PATH, {
+            schema: {
+                tags: ["Operations"],
+                summary: "Get all operations",
+                description: "Returns a list of all registered operations.",
+                response: {
+                    200: { type: "array", items: operationSchemas.Operation },
+                },
+            },
+        }, this.getAll.bind(this));
+
+        server.get(`${this.BASE_PATH}/:id`, {
+            schema: {
+                tags: ["Operations"],
+                summary: "Get operation by ID",
+                description: "Returns a single operation by its identifier.",
+                params: idParamSchema,
+                response: {
+                    200: operationSchemas.Operation,
+                    404: errorSchema,
+                },
+            },
+        }, this.getById.bind(this));
+
+        server.post(this.BASE_PATH, {
+            schema: {
+                tags: ["Operations"],
+                summary: "Create a new operation",
+                description: "Creates a new operation with the provided data.",
+                body: operationSchemas.CreateOperation,
+                response: {
+                    201: operationSchemas.Operation,
+                },
+            },
+        }, this.create.bind(this));
+
+        server.put(`${this.BASE_PATH}/:id`, {
+            schema: {
+                tags: ["Operations"],
+                summary: "Update an operation",
+                description: "Updates an existing operation by its identifier.",
+                params: idParamSchema,
+                body: operationSchemas.UpdateOperation,
+                response: {
+                    200: operationSchemas.Operation,
+                },
+            },
+        }, this.update.bind(this));
+
+        server.delete(`${this.BASE_PATH}/:id`, {
+            schema: {
+                tags: ["Operations"],
+                summary: "Delete an operation",
+                description: "Deletes an operation by its identifier.",
+                params: idParamSchema,
+                response: {
+                    204: { description: "Operation deleted" },
+                },
+            },
+        }, this.delete.bind(this));
     }
 
     private async getAll(): Promise<unknown> {
