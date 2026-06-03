@@ -1,5 +1,6 @@
 import "dotenv/config";
 import Fastify from "fastify";
+import { routes } from "./app/endpoints/routes";
 import { prismaPlugin } from "./app/integrations/prisma/prismaPlugin";
 
 const server = Fastify({
@@ -7,10 +8,7 @@ const server = Fastify({
 });
 
 server.register(prismaPlugin);
-
-server.get("/health-check", async () => {
-    return { status: "ok" };
-});
+server.register(routes);
 
 async function start(): Promise<void> {
     const port = Number(process.env.FASTIFY_PORT ?? 3000);
