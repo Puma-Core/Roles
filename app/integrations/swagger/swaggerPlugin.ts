@@ -11,8 +11,17 @@ export async function registerSwagger(server: FastifyInstance): Promise<void> {
                 description: 'Testing the Fastify OpenAPI implementation',
                 version: '1.0.0'
             },
-            servers: [{ url: `http://0.0.0.0:${process.env.FASTIFY_PORT}` }]
-        }
+            servers: [{ url: "/" }],
+            components: {
+                securitySchemes: {
+                    BearerAuth: {
+                        type: 'http',
+                        scheme: 'bearer',
+                        bearerFormat: 'JWT',
+                    },
+                },
+            },
+        },
     });
 
     await server.register(swaggerUi, {

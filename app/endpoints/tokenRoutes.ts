@@ -11,6 +11,14 @@ export class TokenRoutes {
     }
 
     public register(server: FastifyInstance): void {
+        server.decorate("authenticate", async (request: FastifyRequest, reply: FastifyReply) => {
+            try {
+                await request.jwtVerify();
+            } catch (err) {
+                reply.status(401).send({ message: "Not Authorized" });
+            }
+        });
+
         server.post(`${this.ROUTE_PREFIX}/login`, {
             schema: {
                 tags: ["Tokens"],
@@ -25,17 +33,12 @@ export class TokenRoutes {
         }, this.login.bind(this));
 
         server.post(`${this.ROUTE_PREFIX}/refresh`, {
+            onRequest: [server.authenticate],
             schema: {
                 tags: ["Tokens"],
                 summary: "Refresh access token",
                 description: "Refreshes a valid token while it has not expired.",
-                headers: {
-                    type: "object",
-                    required: ["authorization"],
-                    properties: {
-                        authorization: { type: "string" },
-                    },
-                },
+                security: [{ BearerAuth: [] }],
                 response: {
                     200: tokenSchemas.Token,
                     401: errorSchema,
@@ -59,13 +62,8 @@ export class TokenRoutes {
     }
 
     private async refreshToken(request: FastifyRequest, reply: FastifyReply): Promise<unknown> {
-        const authorization = request.headers.authorization;
-
-        if (!authorization) {
-            return reply.status(401).send({ message: "Not Authorized" });
-        }
-
         try {
+            const authorization = request.headers.authorization!;
             return await this.tokenService.refresh_token(authorization);
         } catch (error) {
             if (error instanceof Error && error.message === "Not Authorized") {

@@ -85,7 +85,7 @@ export class TokenService {
     }
 
     private createTokenData(user: User) {
-        const { password, tokens, id, ...data } = user;
+        const { password, tokens, id, createdAt, updatedAt, roles, ...data } = user;
 
         return this.createTokenDataFromPayload(
             {
