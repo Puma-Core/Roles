@@ -12,6 +12,9 @@ export interface Repository<Entity, CreateData = Entity, UpdateData = Partial<En
     /** Gets one entity by its identifier. */
     getById(id: Id): Promise<Entity | null>;
 
+    /** Gets the first entity that matches a specific criteria. */
+    getBy(where: Partial<Record<keyof Entity, unknown>>): Promise<Entity | null>;
+
     /** Gets all entities. */
     getAll(): Promise<Entity[]>;
 

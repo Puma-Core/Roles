@@ -11,6 +11,7 @@ import { TokenService } from "../services/tokenService";
 import { UserService } from "../services/userService";
 import { OperationRoutes } from "./operationRoutes";
 import { RoleRoutes } from "./roleRoutes";
+import { TokenRoutes } from "./tokenRoutes";
 import { UserRoutes } from "./userRoutes";
 
 export const routes: FastifyPluginAsync = async (server) => {
@@ -23,16 +24,18 @@ export const routes: FastifyPluginAsync = async (server) => {
     // Add Service Instances
     const operationService = new OperationService(operationRepository);
     const roleService = new RoleService(roleRepository);
-    const tokenService = new TokenService(tokenRepository, server);
-    const userService = new UserService(userRepository, tokenService);
+    const tokenService = new TokenService(tokenRepository, userRepository, server);
+    const userService = new UserService(userRepository);
 
     // Add Routes
     const operationRoutes = new OperationRoutes(operationService);
     const roleRoutes = new RoleRoutes(roleService);
+    const tokenRoutes = new TokenRoutes(tokenService);
     const userRoutes = new UserRoutes(userService);
 
     // Register routes
     operationRoutes.register(server);
     roleRoutes.register(server);
+    tokenRoutes.register(server);
     userRoutes.register(server);
 };

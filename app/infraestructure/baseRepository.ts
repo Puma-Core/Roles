@@ -70,6 +70,13 @@ export class BaseRepository<
         return entity ? this.toEntity(entity) : null;
     }
 
+    /** Gets the first entity that matches a specific criteria. */
+    public async getBy(where: Partial<Record<keyof Entity, unknown>>): Promise<Entity | null> {
+        const entity = await this.repository.getBy(where);
+
+        return entity ? this.toEntity(entity) : null;
+    }
+
     /** Gets all entities. */
     public async getAll(): Promise<Entity[]> {
         const entities = await this.repository.getAll();

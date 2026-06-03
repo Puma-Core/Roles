@@ -10,17 +10,18 @@ type UserParams = {
 
 /** Registers user HTTP routes. */
 export class UserRoutes {
+    ROUTE_PREFIX = "/api/users";
+
     public constructor(private readonly userService: UserService) {
         this.userService = userService;
     }
 
     public register(server: FastifyInstance): void {
-        server.get("/api/users", this.getAll.bind(this));
-        server.get("/api/users/:id", this.getById.bind(this));
-        server.post("/api/users", this.create.bind(this));
-        server.put("/api/users/:id", this.update.bind(this));
-        server.delete("/api/users/:id", this.delete.bind(this));
-        server.post("/api/users/login", this.login.bind(this));
+        server.get(`${this.ROUTE_PREFIX}`, this.getAll.bind(this));
+        server.get(`${this.ROUTE_PREFIX}/:id`, this.getById.bind(this));
+        server.post(`${this.ROUTE_PREFIX}`, this.create.bind(this));
+        server.put(`${this.ROUTE_PREFIX}/:id`, this.update.bind(this));
+        server.delete(`${this.ROUTE_PREFIX}/:id`, this.delete.bind(this));
     }
 
     private async getAll(): Promise<unknown> {
@@ -65,17 +66,4 @@ export class UserRoutes {
         return reply.status(204).send();
     }
 
-    private async login(
-        request: FastifyRequest<{ Body: { username: string; password: string } }>,
-        reply: FastifyReply,
-    ): Promise<unknown> {
-        const { username, password } = request.body;
-        const token = await this.userService.login({ username, password });
-
-        if (token === null) {
-            return reply.status(401).send({ message: "Invalid credentials" });
-        }
-
-        return token;
-    }
 }

@@ -11,7 +11,8 @@ import { Repository } from "../interfaces/repository";
  * @public
  */
 export type PrismaModel<Entity, CreateData, UpdateData, Id> = {
-    findUnique(args: { where: { id: Id } }): Promise<Entity | null>;
+    findUnique(args: { where: Record<string, unknown> }): Promise<Entity | null>;
+    findFirst(args: { where: Partial<Record<keyof Entity, unknown>> }): Promise<Entity | null>;
     findMany(): Promise<Entity[]>;
     create(args: { data: CreateData }): Promise<Entity>;
     update(args: { where: { id: Id }; data: UpdateData }): Promise<Entity>;
@@ -49,6 +50,11 @@ export class PrismaRepository<Entity, CreateData = Entity, UpdateData = Partial<
     /** Gets one entity by its identifier. */
     public async getById(id: Id): Promise<Entity | null> {
         return await this.model.findUnique({ where: { id } });
+    }
+
+    /** Gets the first entity that matches a specific criteria. */
+    public async getBy(where: Partial<Record<keyof Entity, unknown>>): Promise<Entity | null> {
+        return await this.model.findFirst({ where });
     }
 
     /** Gets all entities. */

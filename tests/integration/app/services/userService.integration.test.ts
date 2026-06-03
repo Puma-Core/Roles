@@ -7,11 +7,8 @@ import test from "node:test";
 import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 import { PrismaClient } from "@prisma/client";
 import Database from "better-sqlite3";
-import { FastifyInstance } from "fastify";
 import { PrismaRepository } from "../../../../app/infraestructure/prisma/prismaRepository";
-import { TokenRepository } from "../../../../app/infraestructure/tokenRepository";
 import { CreateUserData, UserRepository } from "../../../../app/infraestructure/userRepository";
-import { TokenService } from "../../../../app/services/tokenService";
 import { UserService } from "../../../../app/services/userService";
 
 type UserServiceTestContext = {
@@ -46,15 +43,8 @@ function createUserServiceTestContext(): UserServiceTestContext {
         url: databasePath,
     });
     const prisma = new PrismaClient({ adapter });
-    const tokenRepository = new TokenRepository(PrismaRepository, prisma);
     const userRepository = new UserRepository(PrismaRepository, prisma);
-    const server = {
-        jwt: {
-            sign: (payload: Record<string, unknown>) => JSON.stringify(payload),
-        },
-    } as unknown as FastifyInstance;
-    const tokenService = new TokenService(tokenRepository, server);
-    const userService = new UserService(userRepository, tokenService);
+    const userService = new UserService(userRepository);
 
     return { prisma, tempDirectory, userService };
 }
@@ -139,25 +129,4 @@ test("UserService deletes a user", async (t) => {
     const deleted = await userService.getById(created.id);
 
     assert.equal(deleted, null);
-});
-
-test("UserService logs in a user", async (t) => {
-    const { prisma, tempDirectory, userService } = createUserServiceTestContext();
-    const id = `user-service-login-${Date.now()}`;
-
-    t.after(async () => {
-        await prisma.$disconnect();
-        rmSync(tempDirectory, { recursive: true, force: true });
-    });
-
-    const created = await userService.create(createUserData(id));
-
-    const token = await userService.login({
-        username: created.username,
-        password: "integration-password",
-    });
-
-    assert.notEqual(token, null);
-    assert.equal(token?.name, "access_token");
-    assert.equal(token?.userId, created.id);
 });
