@@ -4,6 +4,7 @@
  * @public
  */
 import { UserValues } from "./interfaces/users";
+import { Token } from "./tokens";
 
 export class User {
     /** Unique user identifier. */
@@ -14,6 +15,9 @@ export class User {
 
     /** Date when the user was last updated. */
     public updatedAt: Date;
+
+    /** Unique username used to authenticate the user. */
+    public username: string;
 
     /** User first name. */
     public firstName: string;
@@ -33,6 +37,9 @@ export class User {
     /** User nationality. */
     public nationality: string;
 
+    /** Tokens assigned to the user. */
+    public tokens: Token[];
+
     /**
      * Creates a user domain model.
      *
@@ -42,11 +49,13 @@ export class User {
         this.id = values.id;
         this.createdAt = values.createdAt;
         this.updatedAt = values.updatedAt;
+        this.username = values.username;
         this.firstName = values.firstName;
         this.lastName = values.lastName;
         this.password = values.password;
         this.age = values.age;
         this.roles = values.roles;
         this.nationality = values.nationality;
+        this.tokens = values.tokens ?? [];
     }
 }
