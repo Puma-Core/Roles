@@ -18,8 +18,8 @@ export interface RoleValues {
     scope: PermissionAccessScope;
 
     /** Permissions assigned to the role. */
-    permissions?: Permission[];
+    permissions: Permission[];
 
     /** Users assigned to the role. */
-    users?: User[];
+    users: User[];
 }

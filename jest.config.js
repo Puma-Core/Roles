@@ -13,4 +13,15 @@ module.exports = {
       },
     ],
   },
+  collectCoverageFrom: [
+    "**/*.{ts,tsx}",
+    "!**/*.spec.ts",
+    "!**/*.test.ts",
+    "!**/**/__tests__/**",
+    "!**/**/node_modules/**",
+    "!**/**/dist/**",
+    "!**/generated/**"
+  ],
+  coverageDirectory: "coverage",
+
 };
