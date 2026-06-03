@@ -5,7 +5,6 @@ import { PrismaRepository } from "../infraestructure/prisma/prismaRepository";
 import { RoleRepository } from "../infraestructure/roleRepository";
 import { TokenRepository } from "../infraestructure/tokenRepository";
 import { UserRepository } from "../infraestructure/userRepository";
-import { prisma } from "../integrations/prisma/prismaClient";
 import { OperationService } from "../services/operationService";
 import { PermissionService } from "../services/permissionService";
 import { RoleService } from "../services/roleService";
@@ -18,7 +17,8 @@ import { TokenRoutes } from "./tokenRoutes";
 import { UserRoutes } from "./userRoutes";
 
 export const routes: FastifyPluginAsync = async (server) => {
-    // Add Repository Instances
+    const prisma = server.prisma;
+
     const operationRepository = new OperationRepository(PrismaRepository, prisma);
     const permissionRepository = new PermissionRepository(PrismaRepository, prisma);
     const roleRepository = new RoleRepository(PrismaRepository, prisma);
