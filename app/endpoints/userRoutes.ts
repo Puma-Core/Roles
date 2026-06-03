@@ -1,36 +1,63 @@
-import { Role } from "../domains/roles";
-import { UpdateRoleData } from "../infraestructure/roleRepository";
-import { RoleService } from "../services/roleService";
+import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
+import { CreateUserData, UpdateUserData } from "../infraestructure/userRepository";
+import { UserService } from "../services/userService";
 
-/**
- * Use case layer for role API operations.
- *
- * Maps the role API actions to the role service without depending on an HTTP framework.
- *
- * @public
- */
-export class RoleUseCase {
-    /**
-     * Creates the role use case.
-     *
-     * @param roleService - Service used to execute role operations.
-     */
-    public constructor(private readonly roleService: RoleService) {
-        this.roleService = roleService;
+type UserParams = {
+    id: string;
+};
+
+/** Registers user HTTP routes. */
+export class UserRoutes {
+    public constructor(private readonly userService: UserService) {
+        this.userService = userService;
     }
 
-    /** Handles GET /api/roles. */
-    public getRoles(): Promise<Role[]> {
-        return this.roleService.getAll();
+    public register(server: FastifyInstance): void {
+        server.get("/api/users", this.getAll.bind(this));
+        server.get("/api/users/:id", this.getById.bind(this));
+        server.post("/api/users", this.create.bind(this));
+        server.put("/api/users/:id", this.update.bind(this));
+        server.delete("/api/users/:id", this.delete.bind(this));
     }
 
-    /** Handles PUT /api/roles/{id}. */
-    public updateRole(id: string, data: UpdateRoleData): Promise<Role> {
-        return this.roleService.update(id, data);
+    private async getAll(): Promise<unknown> {
+        return await this.userService.getAll();
     }
 
-    /** Handles DELETE /api/roles/{id}. */
-    public deleteRole(id: string): Promise<void> {
-        return this.roleService.delete(id);
+    private async getById(
+        request: FastifyRequest<{ Params: UserParams }>,
+        reply: FastifyReply,
+    ): Promise<unknown> {
+        const user = await this.userService.getById(request.params.id);
+
+        if (user === null) {
+            return reply.status(404).send({ message: "User not found" });
+        }
+
+        return user;
+    }
+
+    private async create(
+        request: FastifyRequest<{ Body: CreateUserData }>,
+        reply: FastifyReply,
+    ): Promise<unknown> {
+        const user = await this.userService.create(request.body);
+
+        return reply.status(201).send(user);
+    }
+
+    private async update(
+        request: FastifyRequest<{ Params: UserParams; Body: UpdateUserData }>,
+    ): Promise<unknown> {
+        return await this.userService.update(request.params.id, request.body);
+    }
+
+    private async delete(
+        request: FastifyRequest<{ Params: UserParams }>,
+        reply: FastifyReply,
+    ): Promise<unknown> {
+        await this.userService.delete(request.params.id);
+
+        return reply.status(204).send();
     }
 }
