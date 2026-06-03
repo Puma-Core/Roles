@@ -4,6 +4,7 @@ import {
     UpdatePermissionData,
 } from "../infraestructure/permissionRepository";
 import { Permission } from "../domains/permissions";
+import { RepositoryQueryArgs } from "../infraestructure/interfaces/repository";
 
 /**
  * Service layer for permission use cases.
@@ -23,13 +24,13 @@ export class PermissionService {
     }
 
     /** Gets one permission by its identifier. */
-    public getById(id: number): Promise<Permission | null> {
-        return this.permissionRepository.getById(id);
+    public getById(id: number, args?: RepositoryQueryArgs): Promise<Permission | null> {
+        return this.permissionRepository.getById(id, args);
     }
 
     /** Gets all permissions. */
-    public getAll(): Promise<Permission[]> {
-        return this.permissionRepository.getAll();
+    public getAll(args?: RepositoryQueryArgs): Promise<Permission[]> {
+        return this.permissionRepository.getAll(args);
     }
 
     /** Creates one permission. */
@@ -38,8 +39,8 @@ export class PermissionService {
     }
 
     /** Updates one permission by its identifier. */
-    public update(id: number, data: UpdatePermissionData): Promise<Permission> {
-        return this.permissionRepository.update(id, data);
+    public update(id: number, data: UpdatePermissionData, args?: RepositoryQueryArgs): Promise<Permission> {
+        return this.permissionRepository.update(id, data, args);
     }
 
     /** Deletes one permission by its identifier. */

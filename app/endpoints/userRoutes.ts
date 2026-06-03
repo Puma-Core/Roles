@@ -74,7 +74,7 @@ export class UserRoutes {
             },
         }, this.create.bind(this));
 
-        server.put(`${this.ROUTE_PREFIX}/:id`, {
+        server.patch(`${this.ROUTE_PREFIX}/:id`, {
             schema: {
                 tags: ["Users"],
                 summary: "Update a user",

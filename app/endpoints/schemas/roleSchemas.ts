@@ -36,11 +36,7 @@ export const roleSchemas = {
                 type: "array",
                 description: "Permission IDs that replace the current role permissions. Do not send permission objects here.",
                 items: { type: "number", description: "Permission ID" },
-                example: [1, 2, 3],
             },
-        },
-        example: {
-            permissions: [1, 2, 3],
         },
     },
 };

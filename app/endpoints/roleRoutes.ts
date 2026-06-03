@@ -57,7 +57,7 @@ export class RoleRoutes {
             },
         }, this.create.bind(this));
 
-        server.put("/api/roles/:id", {
+        server.patch("/api/roles/:id", {
             schema: {
                 tags: ["Roles"],
                 summary: "Update a role",

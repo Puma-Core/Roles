@@ -91,17 +91,7 @@ export const userSchemas = {
                 type: "array",
                 description: "Role IDs assigned to the user. Do not send role objects here.",
                 items: { type: "number", description: "Role ID" },
-                example: [1, 2],
             },
-        },
-        example: {
-            username: "ana.ventas",
-            firstName: "Ana",
-            lastName: "Ventas",
-            password: "Password123!",
-            age: 34,
-            nationality: "AR",
-            roles: [1, 2],
         },
     },
     UpdateUser: {
@@ -118,12 +108,7 @@ export const userSchemas = {
                 type: "array",
                 description: "Role IDs that replace the current user roles. Do not send role objects here.",
                 items: { type: "number", description: "Role ID" },
-                example: [1, 3],
             },
-        },
-        example: {
-            firstName: "Ana Updated",
-            roles: [1, 3],
         },
     },
 };

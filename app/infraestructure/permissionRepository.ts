@@ -1,12 +1,13 @@
 import { BaseRepository, RepositoryConstructor } from "./baseRepository";
 import { Permission } from "../domains/permissions";
 import { PermissionValues } from "../domains/interfaces/permissions";
+import { RepositoryQueryArgs } from "./interfaces/repository";
 
 /** Data required to create a permission. */
 export type CreatePermissionData = Omit<PermissionValues, "id" | "operations" | "rolePermissions">;
 
 /** Data allowed to update a permission. */
-export type UpdatePermissionData = Partial<CreatePermissionData>;
+export type UpdatePermissionData = Partial<CreatePermissionData> & { operations?: number[] };
 
 /**
  * Permission repository bound to the permission domain model.
@@ -32,5 +33,19 @@ export class PermissionRepository extends BaseRepository<Permission, CreatePermi
         ...args: unknown[]
     ) {
         super(repositoryClass, PermissionRepository.TABLE_NAME, PermissionRepository.MODEL, ...args);
+    }
+
+    /** Updates one permission and maps operation identifiers to the Prisma relation format. */
+    public async update(id: number, data: UpdatePermissionData, args?: RepositoryQueryArgs): Promise<Permission> {
+        const { operations, ...permissionData } = data;
+        const updateData: Record<string, unknown> = { ...permissionData };
+
+        if (operations !== undefined) {
+            updateData.operations = {
+                set: operations.map((operationId) => ({ id: operationId })),
+            };
+        }
+
+        return await super.update(id, updateData as UpdatePermissionData, args);
     }
 }

@@ -61,7 +61,7 @@ export class OperationRoutes {
             },
         }, this.create.bind(this));
 
-        server.put(`${this.BASE_PATH}/:id`, {
+        server.patch(`${this.BASE_PATH}/:id`, {
             schema: {
                 tags: ["Operations"],
                 summary: "Update an operation",
