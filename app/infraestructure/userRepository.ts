@@ -1,12 +1,12 @@
 import { BaseRepository, RepositoryConstructor } from "./baseRepository";
 import { User } from "../domains/users";
-import { UserValues } from "../domains/interfaces/users";
+import { CreateUserValues } from "../domains/interfaces/users";
 
 /** Data required to create a user. */
-export type CreateUserData = UserValues;
+export type CreateUserData = CreateUserValues;
 
 /** Data allowed to update a user. */
-export type UpdateUserData = Partial<UserValues>;
+export type UpdateUserData = Partial<CreateUserValues>;
 
 /**
  * User repository bound to the user domain model.

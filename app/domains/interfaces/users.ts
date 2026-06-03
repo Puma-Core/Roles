@@ -31,3 +31,5 @@ export interface UserValues {
     /** User nationality. */
     nationality: string;
 }
+
+export interface CreateUserValues extends Omit<UserValues, "id" | "createdAt" | "updatedAt"> {}

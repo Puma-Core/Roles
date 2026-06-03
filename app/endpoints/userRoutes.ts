@@ -1,10 +1,13 @@
+import bcrypt from "bcrypt";
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
-import { CreateUserData, UpdateUserData } from "../infraestructure/userRepository";
+import { UpdateUserData } from "../infraestructure/userRepository";
 import { UserService } from "../services/userService";
+import { UserCreatePayload } from "./models/userCreatePayload";
 
 type UserParams = {
     id: string;
 };
+
 
 /** Registers user HTTP routes. */
 export class UserRoutes {
@@ -38,7 +41,7 @@ export class UserRoutes {
     }
 
     private async create(
-        request: FastifyRequest<{ Body: CreateUserData }>,
+        request: FastifyRequest<{ Body: UserCreatePayload }>,
         reply: FastifyReply,
     ): Promise<unknown> {
         const user = await this.userService.create(request.body);

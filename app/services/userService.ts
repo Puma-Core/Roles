@@ -1,6 +1,8 @@
+import bcrypt from "bcrypt";
 import { CreateUserData, UpdateUserData, UserRepository } from "../infraestructure/userRepository";
 import { User } from "../domains/users";
 
+const BCRYPT_SALT_ROUNDS = process.env.BCRYPT_SALT_ROUNDS ? Number(process.env.BCRYPT_SALT_ROUNDS) : 10;
 /**
  * Service layer for user use cases.
  *
@@ -19,27 +21,28 @@ export class UserService {
     }
 
     /** Gets one user by its identifier. */
-    public getById(id: string): Promise<User | null> {
-        return this.userRepository.getById(id);
+    public async getById(id: string): Promise<User | null> {
+        return await this.userRepository.getById(id);
     }
 
     /** Gets all users. */
-    public getAll(): Promise<User[]> {
-        return this.userRepository.getAll();
+    public async getAll(): Promise<User[]> {
+        return await this.userRepository.getAll();
     }
 
     /** Creates one user. */
-    public create(data: CreateUserData): Promise<User> {
-        return this.userRepository.create(data);
+    public async create(data: CreateUserData): Promise<User> {
+        const password = await bcrypt.hash(data.password, BCRYPT_SALT_ROUNDS);
+        return this.userRepository.create({ ...data, password });
     }
 
     /** Updates one user by its identifier. */
-    public update(id: string, data: UpdateUserData): Promise<User> {
-        return this.userRepository.update(id, data);
+    public async update(id: string, data: UpdateUserData): Promise<User> {
+        return await this.userRepository.update(id, data);
     }
 
     /** Deletes one user by its identifier. */
-    public delete(id: string): Promise<void> {
+    public async delete(id: string): Promise<void> {
         return this.userRepository.delete(id);
     }
 }
