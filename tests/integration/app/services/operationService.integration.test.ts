@@ -19,7 +19,6 @@ type OperationServiceTestContext = {
 
 function createOperationData(id: string, values: Partial<CreateOperationData> = {}): CreateOperationData {
     return {
-        id,
         label: "Integration Operation",
         name: `integration-operation-${id}`,
         tool: "integration-tool",
@@ -61,7 +60,6 @@ test("OperationService creates an operation", async (t) => {
 
     const created = await operationService.create(createOperationData(id));
 
-    assert.equal(created.id, id);
     assert.equal(created.label, "Integration Operation");
 });
 
@@ -74,12 +72,12 @@ test("OperationService gets an operation by id", async (t) => {
         rmSync(tempDirectory, { recursive: true, force: true });
     });
 
-    await operationService.create(createOperationData(id));
+    const created = await operationService.create(createOperationData(id));
 
-    const found = await operationService.getById(id);
+    const found = await operationService.getById(created.id);
 
     assert.notEqual(found, null);
-    assert.equal(found?.id, id);
+    assert.equal(found?.id, created.id);
 });
 
 test("OperationService gets all operations", async (t) => {
@@ -91,11 +89,11 @@ test("OperationService gets all operations", async (t) => {
         rmSync(tempDirectory, { recursive: true, force: true });
     });
 
-    await operationService.create(createOperationData(id));
+    const created = await operationService.create(createOperationData(id));
 
     const operations = await operationService.getAll();
 
-    assert.equal(operations.some((operation) => operation.id === id), true);
+    assert.equal(operations.some((operation) => operation.id === created.id), true);
 });
 
 test("OperationService updates an operation", async (t) => {
@@ -107,9 +105,9 @@ test("OperationService updates an operation", async (t) => {
         rmSync(tempDirectory, { recursive: true, force: true });
     });
 
-    await operationService.create(createOperationData(id));
+    const created = await operationService.create(createOperationData(id));
 
-    const updated = await operationService.update(id, { label: "Updated Operation", operation: ["READ"] });
+    const updated = await operationService.update(created.id, { label: "Updated Operation", operation: ["READ"] });
 
     assert.equal(updated.label, "Updated Operation");
     assert.deepEqual(updated.operation, ["READ"]);
@@ -124,11 +122,11 @@ test("OperationService deletes an operation", async (t) => {
         rmSync(tempDirectory, { recursive: true, force: true });
     });
 
-    await operationService.create(createOperationData(id));
+    const created = await operationService.create(createOperationData(id));
 
-    await operationService.delete(id);
+    await operationService.delete(created.id);
 
-    const deleted = await operationService.getById(id);
+    const deleted = await operationService.getById(created.id);
 
     assert.equal(deleted, null);
 });

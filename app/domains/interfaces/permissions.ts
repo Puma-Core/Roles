@@ -14,7 +14,7 @@ export type PermissionAccessScope = "API" | "ADMIN" | "ALL";
  */
 export interface PermissionValues {
     /** Unique permission identifier. */
-    id: string;
+    id: number;
 
     /** Permission name used to find it easily. */
     name: string;

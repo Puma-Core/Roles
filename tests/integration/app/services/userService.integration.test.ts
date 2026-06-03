@@ -18,12 +18,7 @@ type UserServiceTestContext = {
 };
 
 function createUserData(id: string, values: Partial<CreateUserData> = {}): CreateUserData {
-    const now = new Date();
-
     return {
-        id,
-        createdAt: now,
-        updatedAt: now,
         firstName: "Integration",
         lastName: "User",
         password: "integration-password",
@@ -64,7 +59,6 @@ test("UserService creates a user", async (t) => {
 
     const created = await userService.create(createUserData(id));
 
-    assert.equal(created.id, id);
     assert.equal(created.firstName, "Integration");
 });
 
@@ -77,12 +71,12 @@ test("UserService gets a user by id", async (t) => {
         rmSync(tempDirectory, { recursive: true, force: true });
     });
 
-    await userService.create(createUserData(id));
+    const created = await userService.create(createUserData(id));
 
-    const found = await userService.getById(id);
+    const found = await userService.getById(created.id);
 
     assert.notEqual(found, null);
-    assert.equal(found?.id, id);
+    assert.equal(found?.id, created.id);
 });
 
 test("UserService gets all users", async (t) => {
@@ -94,10 +88,10 @@ test("UserService gets all users", async (t) => {
         rmSync(tempDirectory, { recursive: true, force: true });
     });
 
-    await userService.create(createUserData(id));
+    const created = await userService.create(createUserData(id));
 
     const users = await userService.getAll();
-    assert.equal(users.some((user) => user.id === id), true);
+    assert.equal(users.some((user) => user.id === created.id), true);
 });
 
 test("UserService updates a user", async (t) => {
@@ -109,9 +103,9 @@ test("UserService updates a user", async (t) => {
         rmSync(tempDirectory, { recursive: true, force: true });
     });
 
-    await userService.create(createUserData(id));
+    const created = await userService.create(createUserData(id));
 
-    const updated = await userService.update(id, { firstName: "Updated", age: 31 });
+    const updated = await userService.update(created.id, { firstName: "Updated", age: 31 });
 
     assert.equal(updated.firstName, "Updated");
     assert.equal(updated.age, 31);
@@ -126,11 +120,11 @@ test("UserService deletes a user", async (t) => {
         rmSync(tempDirectory, { recursive: true, force: true });
     });
 
-    await userService.create(createUserData(id));
+    const created = await userService.create(createUserData(id));
 
-    await userService.delete(id);
+    await userService.delete(created.id);
 
-    const deleted = await userService.getById(id);
+    const deleted = await userService.getById(created.id);
 
     assert.equal(deleted, null);
 });

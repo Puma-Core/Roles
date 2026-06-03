@@ -7,7 +7,7 @@ import { OperationValues, OperationType } from "./interfaces/operations";
  */
 export class Operation {
     /** Unique operation identifier. */
-    public id: string;
+    public id: number;
 
     /** Human-readable operation label. */
     public label: string;
@@ -22,10 +22,10 @@ export class Operation {
     public operation: OperationType[];
 
     /** Permission identifier associated with this operation. */
-    public permissionId?: string;
+    public permissionId?: number;
 
     /** Legacy permisos identifier associated with this operation. */
-    public permisosId?: string;
+    public permisosId?: number;
 
     /**
      * Creates an operation domain model.

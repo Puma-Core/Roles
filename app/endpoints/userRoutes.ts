@@ -1,4 +1,3 @@
-import bcrypt from "bcrypt";
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { UpdateUserData } from "../infraestructure/userRepository";
 import { UserService } from "../services/userService";
@@ -31,7 +30,7 @@ export class UserRoutes {
         request: FastifyRequest<{ Params: UserParams }>,
         reply: FastifyReply,
     ): Promise<unknown> {
-        const user = await this.userService.getById(request.params.id);
+        const user = await this.userService.getById(Number(request.params.id));
 
         if (user === null) {
             return reply.status(404).send({ message: "User not found" });
@@ -44,7 +43,8 @@ export class UserRoutes {
         request: FastifyRequest<{ Body: UserCreatePayload }>,
         reply: FastifyReply,
     ): Promise<unknown> {
-        const user = await this.userService.create(request.body);
+        const { age, firstName, lastName, nationality, password, roles } = request.body;
+        const user = await this.userService.create({ age, firstName, lastName, nationality, password, roles });
 
         return reply.status(201).send(user);
     }
@@ -52,14 +52,14 @@ export class UserRoutes {
     private async update(
         request: FastifyRequest<{ Params: UserParams; Body: UpdateUserData }>,
     ): Promise<unknown> {
-        return await this.userService.update(request.params.id, request.body);
+        return await this.userService.update(Number(request.params.id), request.body);
     }
 
     private async delete(
         request: FastifyRequest<{ Params: UserParams }>,
         reply: FastifyReply,
     ): Promise<unknown> {
-        await this.userService.delete(request.params.id);
+        await this.userService.delete(Number(request.params.id));
 
         return reply.status(204).send();
     }

@@ -19,7 +19,6 @@ type RoleServiceTestContext = {
 
 function createRoleData(id: string, values: Partial<CreateRoleData> = {}): CreateRoleData {
     return {
-        id,
         name: `integration-role-${id}`,
         scope: "API",
         ...values,
@@ -56,7 +55,6 @@ test("RoleService creates a role", async (t) => {
 
     const created = await roleService.create(createRoleData(id));
 
-    assert.equal(created.id, id);
     assert.equal(created.name, `integration-role-${id}`);
     assert.equal(created.scope, "API");
 });
@@ -70,12 +68,12 @@ test("RoleService gets a role by id", async (t) => {
         rmSync(tempDirectory, { recursive: true, force: true });
     });
 
-    await roleService.create(createRoleData(id));
+    const created = await roleService.create(createRoleData(id));
 
-    const found = await roleService.getById(id);
+    const found = await roleService.getById(created.id);
 
     assert.notEqual(found, null);
-    assert.equal(found?.id, id);
+    assert.equal(found?.id, created.id);
 });
 
 test("RoleService gets all roles", async (t) => {
@@ -87,11 +85,11 @@ test("RoleService gets all roles", async (t) => {
         rmSync(tempDirectory, { recursive: true, force: true });
     });
 
-    await roleService.create(createRoleData(id));
+    const created = await roleService.create(createRoleData(id));
 
     const roles = await roleService.getAll();
 
-    assert.equal(roles.some((role) => role.id === id), true);
+    assert.equal(roles.some((role) => role.id === created.id), true);
 });
 
 test("RoleService updates a role", async (t) => {
@@ -103,9 +101,9 @@ test("RoleService updates a role", async (t) => {
         rmSync(tempDirectory, { recursive: true, force: true });
     });
 
-    await roleService.create(createRoleData(id));
+    const created = await roleService.create(createRoleData(id));
 
-    const updated = await roleService.update(id, { name: "updated-role", scope: "ADMIN" });
+    const updated = await roleService.update(created.id, { name: "updated-role", scope: "ADMIN" });
 
     assert.equal(updated.name, "updated-role");
     assert.equal(updated.scope, "ADMIN");
@@ -120,11 +118,11 @@ test("RoleService deletes a role", async (t) => {
         rmSync(tempDirectory, { recursive: true, force: true });
     });
 
-    await roleService.create(createRoleData(id));
+    const created = await roleService.create(createRoleData(id));
 
-    await roleService.delete(id);
+    await roleService.delete(created.id);
 
-    const deleted = await roleService.getById(id);
+    const deleted = await roleService.getById(created.id);
 
     assert.equal(deleted, null);
 });

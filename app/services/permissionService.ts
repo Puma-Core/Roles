@@ -23,7 +23,7 @@ export class PermissionService {
     }
 
     /** Gets one permission by its identifier. */
-    public getById(id: string): Promise<Permission | null> {
+    public getById(id: number): Promise<Permission | null> {
         return this.permissionRepository.getById(id);
     }
 
@@ -38,12 +38,12 @@ export class PermissionService {
     }
 
     /** Updates one permission by its identifier. */
-    public update(id: string, data: UpdatePermissionData): Promise<Permission> {
+    public update(id: number, data: UpdatePermissionData): Promise<Permission> {
         return this.permissionRepository.update(id, data);
     }
 
     /** Deletes one permission by its identifier. */
-    public delete(id: string): Promise<void> {
+    public delete(id: number): Promise<void> {
         return this.permissionRepository.delete(id);
     }
 }

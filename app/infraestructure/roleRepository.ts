@@ -3,7 +3,7 @@ import { Role } from "../domains/roles";
 import { RoleValues } from "../domains/interfaces/roles";
 
 /** Data required to create a role. */
-export type CreateRoleData = Omit<RoleValues, "permissions">;
+export type CreateRoleData = Omit<RoleValues, "id" | "permissions">;
 
 /** Data allowed to update a role. */
 export type UpdateRoleData = Partial<CreateRoleData>;
@@ -16,7 +16,7 @@ export type UpdateRoleData = Partial<CreateRoleData>;
  *
  * @public
  */
-export class RoleRepository extends BaseRepository<Role, CreateRoleData, UpdateRoleData, string> {
+export class RoleRepository extends BaseRepository<Role, CreateRoleData, UpdateRoleData, number> {
     /** Prisma model name used by the concrete repository implementation. */
     public static readonly TABLE_NAME = "roles";
 
@@ -27,7 +27,7 @@ export class RoleRepository extends BaseRepository<Role, CreateRoleData, UpdateR
      * @param args - Arguments passed to the repository implementation constructor.
      */
     public constructor(
-        repositoryClass: RepositoryConstructor<Role, CreateRoleData, UpdateRoleData, string>,
+        repositoryClass: RepositoryConstructor<Role, CreateRoleData, UpdateRoleData, number>,
         ...args: unknown[]
     ) {
         super(repositoryClass, RoleRepository.TABLE_NAME, ...args);

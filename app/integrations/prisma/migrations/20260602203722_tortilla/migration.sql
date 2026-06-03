@@ -1,33 +1,33 @@
 -- CreateTable
 CREATE TABLE "Operation" (
-    "id" TEXT NOT NULL PRIMARY KEY,
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "label" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "tool" TEXT NOT NULL,
     "operation" JSONB NOT NULL,
-    "permissionId" TEXT,
-    "permisosId" TEXT,
+    "permissionId" INTEGER,
+    "permisosId" INTEGER,
     CONSTRAINT "Operation_permissionId_fkey" FOREIGN KEY ("permissionId") REFERENCES "Permission" ("id") ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 -- CreateTable
 CREATE TABLE "Permission" (
-    "id" TEXT NOT NULL PRIMARY KEY,
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "name" TEXT NOT NULL,
     "scope" TEXT NOT NULL
 );
 
 -- CreateTable
 CREATE TABLE "Roles" (
-    "id" TEXT NOT NULL PRIMARY KEY,
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "name" TEXT NOT NULL,
     "scope" TEXT NOT NULL
 );
 
 -- CreateTable
 CREATE TABLE "RolePermission" (
-    "roleId" TEXT NOT NULL,
-    "permissionId" TEXT NOT NULL,
+    "roleId" INTEGER NOT NULL,
+    "permissionId" INTEGER NOT NULL,
 
     PRIMARY KEY ("roleId", "permissionId"),
     CONSTRAINT "RolePermission_roleId_fkey" FOREIGN KEY ("roleId") REFERENCES "Roles" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
@@ -36,7 +36,7 @@ CREATE TABLE "RolePermission" (
 
 -- CreateTable
 CREATE TABLE "User" (
-    "id" TEXT NOT NULL PRIMARY KEY,
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL,
     "firstName" TEXT NOT NULL,

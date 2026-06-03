@@ -3,10 +3,10 @@ import { Operation } from "../domains/operations";
 import { OperationValues } from "../domains/interfaces/operations";
 
 /** Data required to create an operation. */
-export type CreateOperationData = OperationValues;
+export type CreateOperationData = Omit<OperationValues, "id">;
 
 /** Data allowed to update an operation. */
-export type UpdateOperationData = Partial<OperationValues>;
+export type UpdateOperationData = Partial<CreateOperationData>;
 
 /**
  * Operation repository bound to the operation domain model.
@@ -16,7 +16,7 @@ export type UpdateOperationData = Partial<OperationValues>;
  *
  * @public
  */
-export class OperationRepository extends BaseRepository<Operation, CreateOperationData, UpdateOperationData, string> {
+export class OperationRepository extends BaseRepository<Operation, CreateOperationData, UpdateOperationData, number> {
     /** Prisma model name used by the concrete repository implementation. */
     public static readonly TABLE_NAME = "Operation";
 
@@ -27,7 +27,7 @@ export class OperationRepository extends BaseRepository<Operation, CreateOperati
      * @param args - Arguments passed to the repository implementation constructor.
      */
     public constructor(
-        repositoryClass: RepositoryConstructor<Operation, CreateOperationData, UpdateOperationData, string>,
+        repositoryClass: RepositoryConstructor<Operation, CreateOperationData, UpdateOperationData, number>,
         ...args: unknown[]
     ) {
         super(repositoryClass, OperationRepository.TABLE_NAME, ...args);

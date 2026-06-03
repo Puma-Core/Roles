@@ -8,7 +8,7 @@ import { Operation } from "./operations";
  */
 export class Permission {
     /** Unique permission identifier. */
-    public id: string;
+    public id: number;
 
     /** Permission name used to find it easily. */
     public name: string;

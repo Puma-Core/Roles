@@ -8,7 +8,7 @@ import { Permission } from "../permissions";
  */
 export interface RoleValues {
     /** Unique role identifier. */
-    id: string;
+    id: number;
 
     /** Role name used to find it easily. */
     name: string;

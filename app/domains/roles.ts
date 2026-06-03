@@ -9,7 +9,7 @@ import { Permission } from "./permissions";
  */
 export class Role {
     /** Unique role identifier. */
-    public id: string;
+    public id: number;
 
     /** Role name used to find it easily. */
     public name: string;

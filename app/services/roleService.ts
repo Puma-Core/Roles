@@ -19,7 +19,7 @@ export class RoleService {
     }
 
     /** Gets one role by its identifier. */
-    public getById(id: string): Promise<Role | null> {
+    public getById(id: number): Promise<Role | null> {
         return this.roleRepository.getById(id);
     }
 
@@ -34,12 +34,12 @@ export class RoleService {
     }
 
     /** Updates one role by its identifier. */
-    public update(id: string, data: UpdateRoleData): Promise<Role> {
+    public update(id: number, data: UpdateRoleData): Promise<Role> {
         return this.roleRepository.update(id, data);
     }
 
     /** Deletes one role by its identifier. */
-    public delete(id: string): Promise<void> {
+    public delete(id: number): Promise<void> {
         return this.roleRepository.delete(id);
     }
 }

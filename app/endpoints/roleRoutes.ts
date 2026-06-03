@@ -28,7 +28,7 @@ export class RoleRoutes {
         request: FastifyRequest<{ Params: RoleParams }>,
         reply: FastifyReply,
     ): Promise<unknown> {
-        const role = await this.roleService.getById(request.params.id);
+        const role = await this.roleService.getById(Number(request.params.id));
 
         if (role === null) {
             return reply.status(404).send({ message: "Role not found" });
@@ -41,7 +41,8 @@ export class RoleRoutes {
         request: FastifyRequest<{ Body: CreateRoleData }>,
         reply: FastifyReply,
     ): Promise<unknown> {
-        const role = await this.roleService.create(request.body);
+        const { name, scope } = request.body;
+        const role = await this.roleService.create({ name, scope });
 
         return reply.status(201).send(role);
     }
@@ -49,14 +50,14 @@ export class RoleRoutes {
     private async update(
         request: FastifyRequest<{ Params: RoleParams; Body: UpdateRoleData }>,
     ): Promise<unknown> {
-        return await this.roleService.update(request.params.id, request.body);
+        return await this.roleService.update(Number(request.params.id), request.body);
     }
 
     private async delete(
         request: FastifyRequest<{ Params: RoleParams }>,
         reply: FastifyReply,
     ): Promise<unknown> {
-        await this.roleService.delete(request.params.id);
+        await this.roleService.delete(Number(request.params.id));
 
         return reply.status(204).send();
     }

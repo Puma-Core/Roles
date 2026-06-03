@@ -12,7 +12,7 @@ export type OperationType = "CREATE" | "READ" | "UPDATE" | "DELETE";
  */
 export interface OperationValues {
     /** Unique operation identifier. */
-    id: string;
+    id: number;
 
     /** Human-readable operation label. */
     label: string;
@@ -27,8 +27,8 @@ export interface OperationValues {
     operation: OperationType[];
 
     /** Permission identifier associated with this operation. */
-    permissionId?: string;
+    permissionId?: number;
 
     /** Legacy permisos identifier associated with this operation. */
-    permisosId?: string;
+    permisosId?: number;
 }

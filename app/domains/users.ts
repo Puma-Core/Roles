@@ -7,7 +7,7 @@ import { UserValues } from "./interfaces/users";
 
 export class User {
     /** Unique user identifier. */
-    public id: string;
+    public id: number;
 
     /** Date when the user was created. */
     public createdAt: Date;

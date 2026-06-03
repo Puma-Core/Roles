@@ -6,12 +6,12 @@ enum OperationType {
 }
 
 model Operation {
-  id           String        @id @default(uuid())
+  id           Int           @id @default(autoincrement())
   label        String
   name         String        @unique
   tool         String
   operation    Json
   permission   Permission?   @relation("PermissionOperations", fields: [permissionId], references: [id])
-  permissionId String?
-  permisosId   String?
+  permissionId Int?
+  permisosId   Int?
 }

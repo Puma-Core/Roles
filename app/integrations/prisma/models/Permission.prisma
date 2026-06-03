@@ -5,7 +5,7 @@ enum PermissionAccessScope {
 }
 
 model Permission {
-  id              String           @id @default(uuid())
+  id              Int              @id @default(autoincrement())
   name            String
   scope           PermissionAccessScope
   operations      Operation[]      @relation("PermissionOperations")

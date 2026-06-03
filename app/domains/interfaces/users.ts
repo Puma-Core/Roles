@@ -5,7 +5,7 @@
  */
 export interface UserValues {
     /** Unique user identifier. */
-    id: string;
+    id: number;
 
     /** Date when the user was created. */
     createdAt: Date;

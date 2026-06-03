@@ -3,10 +3,10 @@ import { Permission } from "../domains/permissions";
 import { PermissionValues } from "../domains/interfaces/permissions";
 
 /** Data required to create a permission. */
-export type CreatePermissionData = PermissionValues;
+export type CreatePermissionData = Omit<PermissionValues, "id" | "operations" | "rolePermissions">;
 
 /** Data allowed to update a permission. */
-export type UpdatePermissionData = Partial<PermissionValues>;
+export type UpdatePermissionData = Partial<CreatePermissionData>;
 
 /**
  * Permission repository bound to the permission domain model.
@@ -16,7 +16,7 @@ export type UpdatePermissionData = Partial<PermissionValues>;
  *
  * @public
  */
-export class PermissionRepository extends BaseRepository<Permission, CreatePermissionData, UpdatePermissionData, string> {
+export class PermissionRepository extends BaseRepository<Permission, CreatePermissionData, UpdatePermissionData, number> {
     /** Prisma model name used by the concrete repository implementation. */
     public static readonly TABLE_NAME = "Permission";
 
@@ -27,7 +27,7 @@ export class PermissionRepository extends BaseRepository<Permission, CreatePermi
      * @param args - Arguments passed to the repository implementation constructor.
      */
     public constructor(
-        repositoryClass: RepositoryConstructor<Permission, CreatePermissionData, UpdatePermissionData, string>,
+        repositoryClass: RepositoryConstructor<Permission, CreatePermissionData, UpdatePermissionData, number>,
         ...args: unknown[]
     ) {
         super(repositoryClass, PermissionRepository.TABLE_NAME, ...args);

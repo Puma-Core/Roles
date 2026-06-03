@@ -23,7 +23,7 @@ export class OperationService {
     }
 
     /** Gets one operation by its identifier. */
-    public getById(id: string): Promise<Operation | null> {
+    public getById(id: number): Promise<Operation | null> {
         return this.operationRepository.getById(id);
     }
 
@@ -38,12 +38,12 @@ export class OperationService {
     }
 
     /** Updates one operation by its identifier. */
-    public update(id: string, data: UpdateOperationData): Promise<Operation> {
+    public update(id: number, data: UpdateOperationData): Promise<Operation> {
         return this.operationRepository.update(id, data);
     }
 
     /** Deletes one operation by its identifier. */
-    public delete(id: string): Promise<void> {
+    public delete(id: number): Promise<void> {
         return this.operationRepository.delete(id);
     }
 }

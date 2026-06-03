@@ -1,13 +1,13 @@
 model Roles {
-  id              String           @id @default(uuid())
+  id              Int              @id @default(autoincrement())
   name            String
   scope           PermissionAccessScope
   rolePermissions RolePermission[]
 }
 
 model RolePermission {
-  roleId       String
-  permissionId String
+  roleId       Int
+  permissionId Int
   role         Roles      @relation(fields: [roleId], references: [id])
   permission   Permission @relation(fields: [permissionId], references: [id])
 

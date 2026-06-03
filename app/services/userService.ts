@@ -21,7 +21,7 @@ export class UserService {
     }
 
     /** Gets one user by its identifier. */
-    public async getById(id: string): Promise<User | null> {
+    public async getById(id: number): Promise<User | null> {
         return await this.userRepository.getById(id);
     }
 
@@ -37,12 +37,12 @@ export class UserService {
     }
 
     /** Updates one user by its identifier. */
-    public async update(id: string, data: UpdateUserData): Promise<User> {
+    public async update(id: number, data: UpdateUserData): Promise<User> {
         return await this.userRepository.update(id, data);
     }
 
     /** Deletes one user by its identifier. */
-    public async delete(id: string): Promise<void> {
+    public async delete(id: number): Promise<void> {
         return this.userRepository.delete(id);
     }
 }

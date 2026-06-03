@@ -33,7 +33,7 @@ export class OperationRoutes {
         request: FastifyRequest<{ Params: OperationParams }>,
         reply: FastifyReply,
     ): Promise<unknown> {
-        const operation = await this.operationService.getById(request.params.id);
+        const operation = await this.operationService.getById(Number(request.params.id));
 
         if (operation === null) {
             return reply.status(404).send({ message: "Operation not found" });
@@ -46,22 +46,23 @@ export class OperationRoutes {
         request: FastifyRequest<{ Body: CreateOperationData }>,
         reply: FastifyReply,
     ): Promise<unknown> {
-        const operation = await this.operationService.create(request.body);
+        const { label, name, operation, permissionId, permisosId, tool } = request.body;
+        const createdOperation = await this.operationService.create({ label, name, operation, permissionId, permisosId, tool });
 
-        return reply.status(201).send(operation);
+        return reply.status(201).send(createdOperation);
     }
 
     private async update(
         request: FastifyRequest<{ Params: OperationParams; Body: UpdateOperationData }>,
     ): Promise<unknown> {
-        return await this.operationService.update(request.params.id, request.body);
+        return await this.operationService.update(Number(request.params.id), request.body);
     }
 
     private async delete(
         request: FastifyRequest<{ Params: OperationParams }>,
         reply: FastifyReply,
     ): Promise<unknown> {
-        await this.operationService.delete(request.params.id);
+        await this.operationService.delete(Number(request.params.id));
 
         return reply.status(204).send();
     }
