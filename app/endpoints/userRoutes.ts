@@ -1,5 +1,6 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { UpdateUserData } from "../infraestructure/userRepository";
+import { USER_FULL_INCLUDE, USER_ROLES_INCLUDE } from "../integrations/prisma/includes/userIncludes";
 import { UserService } from "../services/userService";
 import { UserCreatePayload } from "./models/userCreatePayload";
 import { userSchemas, errorSchema } from "./schemas";
@@ -103,7 +104,9 @@ export class UserRoutes {
         request: FastifyRequest,
         reply: FastifyReply,
     ): Promise<unknown> {
-        const user = await this.userService.getCurrentUser(request.user as Record<string, unknown>);
+        const user = await this.userService.getCurrentUser(request.user as Record<string, unknown>, {
+            include: USER_FULL_INCLUDE,
+        });
 
         if (user === null) {
             return reply.status(404).send({ message: "User not found" });
@@ -113,14 +116,14 @@ export class UserRoutes {
     }
 
     private async getAll(): Promise<unknown> {
-        return await this.userService.getAll();
+        return await this.userService.getAll({ include: USER_ROLES_INCLUDE });
     }
 
     private async getById(
         request: FastifyRequest<{ Params: UserParams }>,
         reply: FastifyReply,
     ): Promise<unknown> {
-        const user = await this.userService.getById(Number(request.params.id));
+        const user = await this.userService.getById(Number(request.params.id), { include: USER_ROLES_INCLUDE });
 
         if (user === null) {
             return reply.status(404).send({ message: "User not found" });

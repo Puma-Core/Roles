@@ -8,15 +8,17 @@
  *
  * @public
  */
+export type RepositoryQueryArgs = Record<string, unknown>;
+
 export interface Repository<Entity, CreateData = Entity, UpdateData = Partial<Entity>, Id = string> {
     /** Gets one entity by its identifier. */
-    getById(id: Id): Promise<Entity | null>;
+    getById(id: Id, args?: RepositoryQueryArgs): Promise<Entity | null>;
 
     /** Gets the first entity that matches a specific criteria. */
-    getBy(where: Partial<Record<keyof Entity, unknown>>): Promise<Entity | null>;
+    getBy(where: Partial<Record<keyof Entity, unknown>>, args?: RepositoryQueryArgs): Promise<Entity | null>;
 
     /** Gets all entities. */
-    getAll(): Promise<Entity[]>;
+    getAll(args?: RepositoryQueryArgs): Promise<Entity[]>;
 
     /** Creates one entity. */
     create(data: CreateData): Promise<Entity>;

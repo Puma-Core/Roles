@@ -1,4 +1,4 @@
-import { Repository } from "../interfaces/repository";
+import { Repository, RepositoryQueryArgs } from "../interfaces/repository";
 
 /**
  * Defines the minimum Prisma model operations required by the generic Prisma repository.
@@ -11,9 +11,9 @@ import { Repository } from "../interfaces/repository";
  * @public
  */
 export type PrismaModel<Entity, CreateData, UpdateData, Id> = {
-    findUnique(args: { where: Record<string, unknown> }): Promise<Entity | null>;
-    findFirst(args: { where: Partial<Record<keyof Entity, unknown>> }): Promise<Entity | null>;
-    findMany(): Promise<Entity[]>;
+    findUnique(args: { where: Record<string, unknown> } & RepositoryQueryArgs): Promise<Entity | null>;
+    findFirst(args: { where: Partial<Record<keyof Entity, unknown>> } & RepositoryQueryArgs): Promise<Entity | null>;
+    findMany(args?: RepositoryQueryArgs): Promise<Entity[]>;
     create(args: { data: CreateData }): Promise<Entity>;
     update(args: { where: { id: Id }; data: UpdateData }): Promise<Entity>;
     delete(args: { where: { id: Id } }): Promise<Entity>;
@@ -48,18 +48,18 @@ export class PrismaRepository<Entity, CreateData = Entity, UpdateData = Partial<
     }
 
     /** Gets one entity by its identifier. */
-    public async getById(id: Id): Promise<Entity | null> {
-        return await this.model.findUnique({ where: { id } });
+    public async getById(id: Id, args: RepositoryQueryArgs = {}): Promise<Entity | null> {
+        return await this.model.findUnique({ where: { id }, ...args });
     }
 
     /** Gets the first entity that matches a specific criteria. */
-    public async getBy(where: Partial<Record<keyof Entity, unknown>>): Promise<Entity | null> {
-        return await this.model.findFirst({ where });
+    public async getBy(where: Partial<Record<keyof Entity, unknown>>, args: RepositoryQueryArgs = {}): Promise<Entity | null> {
+        return await this.model.findFirst({ where, ...args });
     }
 
     /** Gets all entities. */
-    public async getAll(): Promise<Entity[]> {
-        return await this.model.findMany();
+    public async getAll(args?: RepositoryQueryArgs): Promise<Entity[]> {
+        return await this.model.findMany(args);
     }
 
     /** Creates one entity. */

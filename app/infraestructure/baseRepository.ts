@@ -1,4 +1,4 @@
-import { Repository } from "./interfaces/repository";
+import { Repository, RepositoryQueryArgs } from "./interfaces/repository";
 
 /**
  * Defines the constructor shape required to create a repository implementation.
@@ -64,22 +64,22 @@ export class BaseRepository<
     }
 
     /** Gets one entity by its identifier. */
-    public async getById(id: Id): Promise<Entity | null> {
-        const entity = await this.repository.getById(id);
+    public async getById(id: Id, args?: RepositoryQueryArgs): Promise<Entity | null> {
+        const entity = await this.repository.getById(id, args);
 
         return entity ? this.toEntity(entity) : null;
     }
 
     /** Gets the first entity that matches a specific criteria. */
-    public async getBy(where: Partial<Record<keyof Entity, unknown>>): Promise<Entity | null> {
-        const entity = await this.repository.getBy(where);
+    public async getBy(where: Partial<Record<keyof Entity, unknown>>, args?: RepositoryQueryArgs): Promise<Entity | null> {
+        const entity = await this.repository.getBy(where, args);
 
         return entity ? this.toEntity(entity) : null;
     }
 
     /** Gets all entities. */
-    public async getAll(): Promise<Entity[]> {
-        const entities = await this.repository.getAll();
+    public async getAll(args?: RepositoryQueryArgs): Promise<Entity[]> {
+        const entities = await this.repository.getAll(args);
 
         return entities.map((entity) => this.toEntity(entity));
     }

@@ -20,12 +20,6 @@ export class UserRepository extends BaseRepository<User, CreateUserData, UpdateU
     /** Prisma model name used by the concrete repository implementation. */
     public static readonly TABLE_NAME = "User";
     public static readonly MODEL = User;
-    private readonly prisma: {
-        User: {
-            findUnique(args: { where: { id: number }; include: typeof USER_RELATIONS_INCLUDE }): Promise<User | null>;
-            findMany(args: { include: typeof USER_ROLES_INCLUDE }): Promise<User[]>;
-        };
-    };
 
     /**
      * Creates a user repository using the provided repository implementation.
@@ -38,45 +32,19 @@ export class UserRepository extends BaseRepository<User, CreateUserData, UpdateU
         ...args: unknown[]
     ) {
         super(repositoryClass, UserRepository.TABLE_NAME, UserRepository.MODEL, ...args);
-        this.prisma = args[0] as typeof this.prisma;
     }
 
-    /** Gets one user by its identifier with assigned roles. */
-    public async getByIdWithRoles(id: number): Promise<User | null> {
-        const user = await this.prisma.User.findUnique({
-            where: { id },
-            include: USER_RELATIONS_INCLUDE,
-        });
+    /** Updates one user and maps role identifiers to the Prisma relation format. */
+    public async update(id: number, data: UpdateUserData): Promise<User> {
+        const { roles, ...userData } = data;
+        const updateData: Record<string, unknown> = { ...userData };
 
-        return user ? new User(user) : null;
-    }
+        if (roles !== undefined) {
+            updateData.roles = {
+                set: roles.map((roleId) => ({ id: roleId })),
+            };
+        }
 
-    /** Gets all users with assigned roles. */
-    public async getAllWithRoles(): Promise<User[]> {
-        const users = await this.prisma.User.findMany({
-            include: USER_ROLES_INCLUDE,
-        });
-
-        return users.map((user) => new User(user));
+        return await super.update(id, updateData as UpdateUserData);
     }
 }
-
-const USER_ROLES_INCLUDE = {
-    roles: true,
-} as const;
-
-const USER_RELATIONS_INCLUDE = {
-    roles: {
-        include: {
-            rolePermissions: {
-                include: {
-                    permission: {
-                        include: {
-                            operations: true,
-                        },
-                    },
-                },
-            },
-        },
-    },
-} as const;

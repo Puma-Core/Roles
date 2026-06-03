@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import { CreateUserData, UpdateUserData, UserRepository } from "../infraestructure/userRepository";
 import { User } from "../domains/users";
+import { RepositoryQueryArgs } from "../infraestructure/interfaces/repository";
 
 const BCRYPT_SALT_ROUNDS = process.env.BCRYPT_SALT_ROUNDS ? Number(process.env.BCRYPT_SALT_ROUNDS) : 10;
 /**
@@ -21,19 +22,19 @@ export class UserService {
     }
 
     /** Gets one user by its identifier. */
-    public async getById(id: number): Promise<User | null> {
-        return await this.userRepository.getByIdWithRoles(id);
+    public async getById(id: number, args?: RepositoryQueryArgs): Promise<User | null> {
+        return await this.userRepository.getById(id, args);
     }
 
     /** Gets the current user from a decoded token payload. */
-    public async getCurrentUser(tokenPayload: Record<string, unknown>): Promise<User | null> {
+    public async getCurrentUser(tokenPayload: Record<string, unknown>, args?: RepositoryQueryArgs): Promise<User | null> {
         const userId = tokenPayload.userId as number;
-        return await this.userRepository.getByIdWithRoles(userId);
+        return await this.userRepository.getById(userId, args);
     }
 
     /** Gets all users. */
-    public async getAll(): Promise<User[]> {
-        return await this.userRepository.getAllWithRoles();
+    public async getAll(args?: RepositoryQueryArgs): Promise<User[]> {
+        return await this.userRepository.getAll(args);
     }
 
     /** Creates one user. */
