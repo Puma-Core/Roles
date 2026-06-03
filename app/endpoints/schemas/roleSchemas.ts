@@ -5,7 +5,17 @@ export const roleSchemas = {
             id: { type: "number" },
             name: { type: "string" },
             scope: { type: "string", enum: ["API", "ADMIN", "ALL"] },
-            permissions: { type: "array", items: { type: "object" } },
+            permissions: {
+                type: "array",
+                items: {
+                    type: "object",
+                    properties: {
+                        id: { type: "number" },
+                        name: { type: "string" },
+                        scope: { type: "string", enum: ["API", "ADMIN", "ALL"] },
+                    },
+                },
+            },
         },
     },
     CreateRole: {
@@ -18,9 +28,19 @@ export const roleSchemas = {
     },
     UpdateRole: {
         type: "object",
+        description: "Request body used to update a role. Send permission IDs in permissions when changing role-permission relations.",
         properties: {
             name: { type: "string" },
             scope: { type: "string", enum: ["API", "ADMIN", "ALL"] },
+            permissions: {
+                type: "array",
+                description: "Permission IDs that replace the current role permissions. Do not send permission objects here.",
+                items: { type: "number", description: "Permission ID" },
+                example: [1, 2, 3],
+            },
+        },
+        example: {
+            permissions: [1, 2, 3],
         },
     },
 };

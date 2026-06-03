@@ -1,5 +1,6 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { CreateRoleData, UpdateRoleData } from "../infraestructure/roleRepository";
+import { ROLE_PERMISSIONS_INCLUDE } from "../integrations/prisma/includes/roleIncludes";
 import { RoleService } from "../services/roleService";
 import { roleSchemas, errorSchema } from "./schemas";
 
@@ -83,14 +84,14 @@ export class RoleRoutes {
     }
 
     private async getAll(): Promise<unknown> {
-        return await this.roleService.getAll();
+        return await this.roleService.getAll({ include: ROLE_PERMISSIONS_INCLUDE });
     }
 
     private async getById(
         request: FastifyRequest<{ Params: RoleParams }>,
         reply: FastifyReply,
     ): Promise<unknown> {
-        const role = await this.roleService.getById(Number(request.params.id));
+        const role = await this.roleService.getById(Number(request.params.id), { include: ROLE_PERMISSIONS_INCLUDE });
 
         if (role === null) {
             return reply.status(404).send({ message: "Role not found" });
@@ -112,7 +113,7 @@ export class RoleRoutes {
     private async update(
         request: FastifyRequest<{ Params: RoleParams; Body: UpdateRoleData }>,
     ): Promise<unknown> {
-        return await this.roleService.update(Number(request.params.id), request.body);
+        return await this.roleService.update(Number(request.params.id), request.body, { include: ROLE_PERMISSIONS_INCLUDE });
     }
 
     private async delete(

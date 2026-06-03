@@ -78,6 +78,7 @@ export const userSchemas = {
     },
     CreateUser: {
         type: "object",
+        description: "Request body used to create a user. Relations must be sent as arrays of IDs, not as full objects.",
         required: ["username", "firstName", "lastName", "password", "age", "nationality"],
         properties: {
             username: { type: "string" },
@@ -86,11 +87,26 @@ export const userSchemas = {
             password: { type: "string" },
             age: { type: "number" },
             nationality: { type: "string" },
-            roles: { type: "array", items: { type: "number" } },
+            roles: {
+                type: "array",
+                description: "Role IDs assigned to the user. Do not send role objects here.",
+                items: { type: "number", description: "Role ID" },
+                example: [1, 2],
+            },
+        },
+        example: {
+            username: "ana.ventas",
+            firstName: "Ana",
+            lastName: "Ventas",
+            password: "Password123!",
+            age: 34,
+            nationality: "AR",
+            roles: [1, 2],
         },
     },
     UpdateUser: {
         type: "object",
+        description: "Request body used to update a user. Send role IDs in roles when changing user-role relations.",
         properties: {
             username: { type: "string" },
             firstName: { type: "string" },
@@ -98,7 +114,16 @@ export const userSchemas = {
             password: { type: "string" },
             age: { type: "number" },
             nationality: { type: "string" },
-            roles: { type: "array", items: { type: "number" } },
+            roles: {
+                type: "array",
+                description: "Role IDs that replace the current user roles. Do not send role objects here.",
+                items: { type: "number", description: "Role ID" },
+                example: [1, 3],
+            },
+        },
+        example: {
+            firstName: "Ana Updated",
+            roles: [1, 3],
         },
     },
 };

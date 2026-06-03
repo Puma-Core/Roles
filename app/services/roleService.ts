@@ -1,5 +1,6 @@
 import { CreateRoleData, RoleRepository, UpdateRoleData } from "../infraestructure/roleRepository";
 import { Role } from "../domains/roles";
+import { RepositoryQueryArgs } from "../infraestructure/interfaces/repository";
 
 /**
  * Service layer for role use cases.
@@ -19,13 +20,13 @@ export class RoleService {
     }
 
     /** Gets one role by its identifier. */
-    public getById(id: number): Promise<Role | null> {
-        return this.roleRepository.getById(id);
+    public getById(id: number, args?: RepositoryQueryArgs): Promise<Role | null> {
+        return this.roleRepository.getById(id, args);
     }
 
     /** Gets all roles. */
-    public getAll(): Promise<Role[]> {
-        return this.roleRepository.getAll();
+    public getAll(args?: RepositoryQueryArgs): Promise<Role[]> {
+        return this.roleRepository.getAll(args);
     }
 
     /** Creates one role. */
@@ -34,8 +35,8 @@ export class RoleService {
     }
 
     /** Updates one role by its identifier. */
-    public update(id: number, data: UpdateRoleData): Promise<Role> {
-        return this.roleRepository.update(id, data);
+    public update(id: number, data: UpdateRoleData, args?: RepositoryQueryArgs): Promise<Role> {
+        return this.roleRepository.update(id, data, args);
     }
 
     /** Deletes one role by its identifier. */
