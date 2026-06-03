@@ -59,25 +59,26 @@ export class TokenService {
 
     /** Validates an existing token and refreshes it while it is still valid. */
     public accessToken(token: Token, user: User): Promise<Token> {
-        if (token.expireAt.getTime() <= Date.now()) {
+        this.verifyToken(`Bearer ${token.value}`);
+        return this.tokenRepository.update(token.id, this.createTokenData(user));
+    }
+
+    /** Verifies a bearer token and returns its decoded payload. */
+    public verifyToken(bearerToken: string): TokenPayload {
+        const value = this.getBearerValue(bearerToken);
+        try {
+            return this.server.jwt.verify<TokenPayload>(value);
+        } catch {
             throw new Error("Not Authorized");
         }
-
-        return this.tokenRepository.update(token.id, this.createTokenData(user));
     }
 
     /** Refreshes a bearer token while the persisted token is still valid. */
     public async refresh_token(bearerToken: string): Promise<Token> {
-        const value = this.getBearerValue(bearerToken);
-        const token = await this.tokenRepository.getBy({ value });
+        const payload = this.verifyToken(bearerToken);
+        const token = await this.tokenRepository.getBy({ value: this.getBearerValue(bearerToken) });
 
-        if (!token || token.expireAt.getTime() <= Date.now()) {
-            throw new Error("Not Authorized");
-        }
-
-        const payload = this.server.jwt.decode<TokenPayload>(token.value);
-
-        if (!payload) {
+        if (!token) {
             throw new Error("Not Authorized");
         }
 

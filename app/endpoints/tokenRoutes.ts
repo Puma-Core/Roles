@@ -11,13 +11,6 @@ export class TokenRoutes {
     }
 
     public register(server: FastifyInstance): void {
-        server.decorate("authenticate", async (request: FastifyRequest, reply: FastifyReply) => {
-            try {
-                await request.jwtVerify();
-            } catch (err) {
-                reply.status(401).send({ message: "Not Authorized" });
-            }
-        });
 
         server.post(`${this.ROUTE_PREFIX}/login`, {
             schema: {
@@ -63,9 +56,9 @@ export class TokenRoutes {
 
     private async refreshToken(request: FastifyRequest, reply: FastifyReply): Promise<unknown> {
         try {
-            const authorization = request.headers.authorization!;
-            return await this.tokenService.refresh_token(authorization);
+            return await this.tokenService.refresh_token(request.headers.authorization!);
         } catch (error) {
+            request.log.error({ err: error, message: error instanceof Error ? error.message : "Unknown" }, "Refresh token failed");
             if (error instanceof Error && error.message === "Not Authorized") {
                 return reply.status(401).send({ message: error.message });
             }

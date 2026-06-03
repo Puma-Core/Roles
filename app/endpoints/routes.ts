@@ -1,4 +1,4 @@
-import { FastifyPluginAsync } from "fastify";
+import { FastifyPluginAsync, FastifyRequest, FastifyReply } from "fastify";
 import { OperationRepository } from "../infraestructure/operationRepository";
 import { PrismaRepository } from "../infraestructure/prisma/prismaRepository";
 import { RoleRepository } from "../infraestructure/roleRepository";
@@ -26,6 +26,20 @@ export const routes: FastifyPluginAsync = async (server) => {
     const roleService = new RoleService(roleRepository);
     const tokenService = new TokenService(tokenRepository, userRepository, server);
     const userService = new UserService(userRepository);
+
+    // Add authenticate decorator
+    server.decorate("authenticate", async (request: FastifyRequest, reply: FastifyReply) => {
+        const authorization = request.headers.authorization;
+        if (!authorization) {
+            return reply.status(401).send({ message: "Not Authorized" });
+        }
+        try {
+            tokenService.verifyToken(authorization);
+        } catch (err) {
+            request.log.error({ err }, "Token verification failed");
+            return reply.status(401).send({ message: "Not Authorized" });
+        }
+    });
 
     // Add Routes
     const operationRoutes = new OperationRoutes(operationService);
