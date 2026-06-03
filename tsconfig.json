@@ -8,5 +8,6 @@
     "isolatedModules": true,
     "types": ["node", "jest"],
     "outDir": "dist"
-  }
+  },
+  "include": ["**/*.ts"]
 }

@@ -14,7 +14,7 @@ describe('RoleService', () => {
 
   describe('getById', () => {
     it('returns a role when found', async () => {
-      const role = new Role({ id: 1, name: 'Admin', scope: 'API' });
+      const role = new Role({ id: 1, name: 'Admin', scope: 'API', permissions: [], users: [] });
       mockRepo.getById.mockResolvedValue(role);
 
       const result = await service.getById(1);
@@ -45,8 +45,8 @@ describe('RoleService', () => {
   describe('getAll', () => {
     it('returns all roles', async () => {
       const roles = [
-        new Role({ id: 1, name: 'Admin', scope: 'API' }),
-        new Role({ id: 2, name: 'User', scope: 'API' }),
+        new Role({ id: 1, name: 'Admin', scope: 'API', permissions: [], users: [] }),
+        new Role({ id: 2, name: 'User', scope: 'API', permissions: [], users: [] }),
       ];
       mockRepo.getAll.mockResolvedValue(roles);
 
@@ -68,7 +68,7 @@ describe('RoleService', () => {
   describe('create', () => {
     it('creates and returns a new role', async () => {
       const createData = { name: 'Manager', scope: 'API' as const };
-      const createdRole = new Role({ id: 3, ...createData });
+      const createdRole = new Role({ id: 3, ...createData, permissions: [], users: [] });
       mockRepo.create.mockResolvedValue(createdRole);
 
       const result = await service.create(createData);
@@ -81,7 +81,7 @@ describe('RoleService', () => {
   describe('update', () => {
     it('updates and returns the role', async () => {
       const updateData = { name: 'Super Admin' };
-      const updatedRole = new Role({ id: 1, name: 'Super Admin', scope: 'API' });
+      const updatedRole = new Role({ id: 1, name: 'Super Admin', scope: 'API', permissions: [], users: [] });
       mockRepo.update.mockResolvedValue(updatedRole);
 
       const result = await service.update(1, updateData);
@@ -93,7 +93,7 @@ describe('RoleService', () => {
     it('passes query args to the repository', async () => {
       const updateData = { name: 'Updated' };
       const args = { include: { permissions: true } };
-      mockRepo.update.mockResolvedValue(new Role({ id: 1, name: 'Updated', scope: 'API' }));
+      mockRepo.update.mockResolvedValue(new Role({ id: 1, name: 'Updated', scope: 'API', permissions: [], users: [] }));
 
       await service.update(1, updateData, args);
 
