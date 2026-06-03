@@ -13,5 +13,4 @@ model Operation {
   operation    Json
   permission   Permission?   @relation("PermissionOperations", fields: [permissionId], references: [id])
   permissionId Int?
-  permisosId   Int?
 }

@@ -104,13 +104,13 @@ INSERT INTO "Permission" ("name", "scope") VALUES
 ('comercial_cotizaciones', 'ALL'),
 ('comercial_reportes', 'API');
 
-INSERT INTO "Operation" ("label", "name", "tool", "operation", "permissionId", "permisosId") VALUES
-('Gestionar clientes de ventas', 'ventas_clientes_crud', 'ventas-clientes', '["CREATE","READ","UPDATE","DELETE"]', (SELECT "id" FROM "Permission" WHERE "name" = 'ventas_clientes' LIMIT 1), NULL),
-('Gestionar oportunidades de ventas', 'ventas_oportunidades_crud', 'ventas-oportunidades', '["CREATE","READ","UPDATE","DELETE"]', (SELECT "id" FROM "Permission" WHERE "name" = 'ventas_oportunidades' LIMIT 1), NULL),
-('Consultar y actualizar pedidos', 'ventas_pedidos_read_update', 'ventas-pedidos', '["READ","UPDATE"]', (SELECT "id" FROM "Permission" WHERE "name" = 'ventas_pedidos' LIMIT 1), NULL),
-('Gestionar campanias comerciales', 'comercial_campanias_crud', 'comercial-campanias', '["CREATE","READ","UPDATE","DELETE"]', (SELECT "id" FROM "Permission" WHERE "name" = 'comercial_campanias' LIMIT 1), NULL),
-('Gestionar cotizaciones comerciales', 'comercial_cotizaciones_crud', 'comercial-cotizaciones', '["CREATE","READ","UPDATE","DELETE"]', (SELECT "id" FROM "Permission" WHERE "name" = 'comercial_cotizaciones' LIMIT 1), NULL),
-('Consultar reportes comerciales', 'comercial_reportes_read', 'comercial-reportes', '["READ"]', (SELECT "id" FROM "Permission" WHERE "name" = 'comercial_reportes' LIMIT 1), NULL);
+INSERT INTO "Operation" ("label", "name", "tool", "operation", "permissionId") VALUES
+('Gestionar clientes de ventas', 'ventas_clientes_crud', 'ventas-clientes', '["CREATE","READ","UPDATE","DELETE"]', (SELECT "id" FROM "Permission" WHERE "name" = 'ventas_clientes' LIMIT 1)),
+('Gestionar oportunidades de ventas', 'ventas_oportunidades_crud', 'ventas-oportunidades', '["CREATE","READ","UPDATE","DELETE"]', (SELECT "id" FROM "Permission" WHERE "name" = 'ventas_oportunidades' LIMIT 1)),
+('Consultar y actualizar pedidos', 'ventas_pedidos_read_update', 'ventas-pedidos', '["READ","UPDATE"]', (SELECT "id" FROM "Permission" WHERE "name" = 'ventas_pedidos' LIMIT 1)),
+('Gestionar campanias comerciales', 'comercial_campanias_crud', 'comercial-campanias', '["CREATE","READ","UPDATE","DELETE"]', (SELECT "id" FROM "Permission" WHERE "name" = 'comercial_campanias' LIMIT 1)),
+('Gestionar cotizaciones comerciales', 'comercial_cotizaciones_crud', 'comercial-cotizaciones', '["CREATE","READ","UPDATE","DELETE"]', (SELECT "id" FROM "Permission" WHERE "name" = 'comercial_cotizaciones' LIMIT 1)),
+('Consultar reportes comerciales', 'comercial_reportes_read', 'comercial-reportes', '["READ"]', (SELECT "id" FROM "Permission" WHERE "name" = 'comercial_reportes' LIMIT 1));
 
 INSERT INTO "RolePermission" ("roleId", "permissionId") VALUES
 ((SELECT "id" FROM "Roles" WHERE "name" = 'venta_admin' LIMIT 1), (SELECT "id" FROM "Permission" WHERE "name" = 'ventas_clientes' LIMIT 1)),

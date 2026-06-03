@@ -29,6 +29,4 @@ export interface OperationValues {
     /** Permission identifier associated with this operation. */
     permissionId?: number;
 
-    /** Legacy permisos identifier associated with this operation. */
-    permisosId?: number;
 }

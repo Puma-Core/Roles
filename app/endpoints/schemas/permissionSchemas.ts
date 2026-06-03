@@ -19,7 +19,6 @@ export const permissionSchemas = {
                             items: { type: "string", enum: ["CREATE", "READ", "UPDATE", "DELETE"] },
                         },
                         permissionId: { type: "number", nullable: true },
-                        permisosId: { type: "number", nullable: true },
                     },
                 },
             },

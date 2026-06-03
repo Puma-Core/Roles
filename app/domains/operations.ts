@@ -24,8 +24,6 @@ export class Operation {
     /** Permission identifier associated with this operation. */
     public permissionId?: number;
 
-    /** Legacy permisos identifier associated with this operation. */
-    public permisosId?: number;
 
     /**
      * Creates an operation domain model.
@@ -39,6 +37,5 @@ export class Operation {
         this.tool = values.tool;
         this.operation = values.operation;
         this.permissionId = values.permissionId;
-        this.permisosId = values.permisosId;
     }
 }

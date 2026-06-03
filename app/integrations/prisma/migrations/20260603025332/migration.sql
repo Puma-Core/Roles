@@ -6,7 +6,6 @@ CREATE TABLE "Operation" (
     "tool" TEXT NOT NULL,
     "operation" JSONB NOT NULL,
     "permissionId" INTEGER,
-    "permisosId" INTEGER,
     CONSTRAINT "Operation_permissionId_fkey" FOREIGN KEY ("permissionId") REFERENCES "Permission" ("id") ON DELETE SET NULL ON UPDATE CASCADE
 );
 

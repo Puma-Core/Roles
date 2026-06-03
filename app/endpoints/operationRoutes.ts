@@ -108,8 +108,8 @@ export class OperationRoutes {
         request: FastifyRequest<{ Body: CreateOperationData }>,
         reply: FastifyReply,
     ): Promise<unknown> {
-        const { label, name, operation, permissionId, permisosId, tool } = request.body;
-        const createdOperation = await this.operationService.create({ label, name, operation, permissionId, permisosId, tool });
+        const { label, name, operation, permissionId, tool } = request.body;
+        const createdOperation = await this.operationService.create({ label, name, operation, permissionId, tool });
 
         return reply.status(201).send(createdOperation);
     }

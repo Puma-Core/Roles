@@ -9,9 +9,9 @@
   "scripts": {
     "dev": "tsx watch --clear-screen=false main.ts",
     "start": "tsx main.ts",
-    "test": "jest",
-    "test:unit": "jest --testPathPattern='tests/unitTests'",
-    "test:integration": "jest --testPathPattern='tests/integration'"
+    "test": "jest --runInBand",
+    "test:unit": "jest --runInBand --testPathPattern='tests/unitTests'",
+    "test:integration": "jest --runInBand --testPathPattern='tests/integration'"
   },
   "dependencies": {
     "@fastify/cors": "^11.2.0",

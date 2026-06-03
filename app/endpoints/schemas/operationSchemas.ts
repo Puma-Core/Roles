@@ -8,7 +8,6 @@ export const operationSchemas = {
             tool: { type: "string" },
             operation: { type: "array", items: { type: "string", enum: ["CREATE", "READ", "UPDATE", "DELETE"] } },
             permissionId: { type: "number", nullable: true },
-            permisosId: { type: "number", nullable: true },
         },
     },
     CreateOperation: {
@@ -20,7 +19,6 @@ export const operationSchemas = {
             tool: { type: "string" },
             operation: { type: "array", items: { type: "string", enum: ["CREATE", "READ", "UPDATE", "DELETE"] } },
             permissionId: { type: "number" },
-            permisosId: { type: "number" },
         },
     },
     UpdateOperation: {
@@ -31,7 +29,6 @@ export const operationSchemas = {
             tool: { type: "string" },
             operation: { type: "array", items: { type: "string", enum: ["CREATE", "READ", "UPDATE", "DELETE"] } },
             permissionId: { type: "number" },
-            permisosId: { type: "number" },
         },
     },
 };
