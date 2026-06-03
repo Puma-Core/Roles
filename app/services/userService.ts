@@ -25,6 +25,12 @@ export class UserService {
         return await this.userRepository.getById(id);
     }
 
+    /** Gets the current user from a decoded token payload. */
+    public async getCurrentUser(tokenPayload: Record<string, unknown>): Promise<User | null> {
+        const userId = tokenPayload.userId as number;
+        return await this.userRepository.getById(userId);
+    }
+
     /** Gets all users. */
     public async getAll(): Promise<User[]> {
         return await this.userRepository.getAll();

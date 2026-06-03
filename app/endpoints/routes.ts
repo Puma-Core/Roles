@@ -29,14 +29,9 @@ export const routes: FastifyPluginAsync = async (server) => {
 
     // Add authenticate decorator
     server.decorate("authenticate", async (request: FastifyRequest, reply: FastifyReply) => {
-        const authorization = request.headers.authorization;
-        if (!authorization) {
-            return reply.status(401).send({ message: "Not Authorized" });
-        }
         try {
-            tokenService.verifyToken(authorization);
-        } catch (err) {
-            request.log.error({ err }, "Token verification failed");
+            await request.jwtVerify();
+        } catch {
             return reply.status(401).send({ message: "Not Authorized" });
         }
     });

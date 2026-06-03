@@ -23,6 +23,20 @@ export class UserRoutes {
     }
 
     public register(server: FastifyInstance): void {
+        server.get(`${this.ROUTE_PREFIX}/me`, {
+            onRequest: [server.authenticate],
+            schema: {
+                tags: ["Users"],
+                summary: "Get current user",
+                description: "Returns the authenticated user's information based on the JWT token.",
+                security: [{ BearerAuth: [] }],
+                response: {
+                    200: userSchemas.User,
+                    401: errorSchema,
+                },
+            },
+        }, this.getMe.bind(this));
+
         server.get(`${this.ROUTE_PREFIX}`, {
             schema: {
                 tags: ["Users"],
@@ -83,6 +97,19 @@ export class UserRoutes {
                 },
             },
         }, this.delete.bind(this));
+    }
+
+    private async getMe(
+        request: FastifyRequest,
+        reply: FastifyReply,
+    ): Promise<unknown> {
+        const user = await this.userService.getCurrentUser(request.user as Record<string, unknown>);
+
+        if (user === null) {
+            return reply.status(404).send({ message: "User not found" });
+        }
+
+        return user;
     }
 
     private async getAll(): Promise<unknown> {
